@@ -66,12 +66,13 @@ def translate_text(text, target_language="en"):
     try:
         client = translate.TranslationServiceClient()
         parent = f"projects/{PROJECT_ID}/locations/global"
+        lines = text.split("\n")
         translated_lines = client.translate_text(
-            contents=[text],
+            contents=[line for line in lines],
             target_language_code=target_language,
             parent=parent,
         )
-        return translated_lines.translations[0].translated_text
+        return "\n".join([translation.translated_text for translation in translated_lines.translations])
     except Exception as e:
         print(f"Error translating text: {e}")
         return None

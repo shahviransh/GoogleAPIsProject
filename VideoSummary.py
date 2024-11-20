@@ -205,7 +205,7 @@ def main():
             steps = combine_results(transcription, video_analysis)
 
             # Write the steps to a file
-            with open(f"Steps/{video['title']}.txt", "w+") as f:
+            with open(f"Steps/{sanitize_filename(video['title'])}.txt", "w+") as f:
                 f.write(f"Steps for '{video['title']}':\n")
                 for step in steps:
                     f.write(
