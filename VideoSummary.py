@@ -7,13 +7,14 @@ from nltk.tokenize import sent_tokenize
 import nltk
 from dotenv import load_dotenv
 
-nltk.download('punkt')
+nltk.download("punkt")
+nltk.download("punkt_tab")
 
 # Load the environment variables
 load_dotenv()
 
 # YouTube API setup
-YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
 
 
@@ -26,11 +27,16 @@ def upload_to_gcs(bucket_name, source_file_name, destination_blob_name):
     print(f"File {source_file_name} uploaded to {destination_blob_name}.")
     return f"gs://{bucket_name}/{destination_blob_name}"
 
+
 # Fetch details of YouTube videos
 def fetch_video_details(video_ids):
     request = youtube.videos().list(part="snippet", id=",".join(video_ids))
     response = request.execute()
-    return [{"title": item["snippet"]["title"], "video_id": item["id"]} for item in response.get("items", [])]
+    return [
+        {"title": item["snippet"]["title"], "video_id": item["id"]}
+        for item in response.get("items", [])
+    ]
+
 
 # Download video using youtube-dl
 def download_video(video_url, output_path):
@@ -44,62 +50,83 @@ def download_video(video_url, output_path):
         print(f"Error downloading video: {e}")
         return None
 
+
 # Convert video to audio for transcription
 def extract_audio(video_path, audio_path):
     try:
         video = AudioSegment.from_file(video_path)
-        video.export(audio_path, format="wav")
+        mono_audio = video.set_channels(1).set_sample_width(2)
+        mono_audio.export(audio_path, format="wav")
         return audio_path
     except Exception as e:
         print(f"Error extracting audio: {e}")
         return None
+
 
 # Transcribe audio using Google Speech-to-Text API
 def transcribe_audio(gcs_uri):
     client = speech.SpeechClient()
     audio = speech.RecognitionAudio(uri=gcs_uri)
     config = speech.RecognitionConfig(
-        encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-        sample_rate_hertz=16000,
-        language_code="en-US"
+        encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16, language_code="en-US"
     )
     operation = client.long_running_recognize(config=config, audio=audio)
     print("Waiting for operation to complete...")
     response = operation.result(timeout=300)
 
-    transcription = " ".join([result.alternatives[0].transcript for result in response.results])
+    transcription = " ".join(
+        [result.alternatives[0].transcript for result in response.results]
+    )
     return transcription
 
+
 # Analyze video using Google Video Intelligence API
-def analyze_video(video_path):
+def analyze_video(gcs_uri):
     client = videointelligence.VideoIntelligenceServiceClient()
 
-    with open(video_path, "rb") as f:
-        input_content = f.read()
+    # Specify the features to analyze
+    features = [
+        videointelligence.Feature.OBJECT_TRACKING,
+        videointelligence.Feature.LABEL_DETECTION,
+    ]
 
-    features = [videointelligence.Feature.OBJECT_TRACKING, videointelligence.Feature.LABEL_DETECTION]
-    operation = client.annotate_video(features=features, input_content=input_content)
-    print("Analyzing video...")
+    # Start video annotation
+    operation = client.annotate_video(
+        request={"features": features, "input_uri": gcs_uri}
+    )
+    print("Analyzing video... This may take a while.")
     results = operation.result(timeout=600)
 
-    # Extract detected labels and objects
-    labels = []
-    for annotation in results.annotation_results[0].segment_label_annotations:
-        labels.append({
-            "description": annotation.entity.description,
-            "start_time": annotation.segments[0].segment.start_time_offset.total_seconds(),
-            "end_time": annotation.segments[0].segment.end_time_offset.total_seconds(),
-        })
+    # Process the annotation results
+    annotations = {
+        "labels": [],
+        "objects": [],
+    }
 
-    objects = []
-    for object_annotation in results.annotation_results[0].object_annotations:
-        objects.append({
-            "entity": object_annotation.entity.description,
-            "start_time": object_annotation.segment.start_time_offset.total_seconds(),
-            "end_time": object_annotation.segment.end_time_offset.total_seconds(),
-        })
+    # Extract label annotations
+    for label in results.annotation_results[0].segment_label_annotations:
+        annotations["labels"].append(
+            {
+                "description": label.entity.description,
+                "start_time": label.segments[
+                    0
+                ].segment.start_time_offset.total_seconds(),
+                "end_time": label.segments[0].segment.end_time_offset.total_seconds(),
+            }
+        )
 
-    return {"labels": labels, "objects": objects}
+    # Extract object annotations
+    for obj in results.annotation_results[0].object_annotations:
+        annotations["objects"].append(
+            {
+                "entity": obj.entity.description,
+                "start_time": obj.segment.start_time_offset.total_seconds(),
+                "end_time": obj.segment.end_time_offset.total_seconds(),
+            }
+        )
+
+    return annotations
+
 
 # Combine transcription and video analysis
 def combine_results(transcription, video_analysis):
@@ -111,16 +138,23 @@ def combine_results(transcription, video_analysis):
             "start_time": label["start_time"],
             "end_time": label["end_time"],
         }
-        relevant_sentences = [s for s in sentences if label["description"].lower() in s.lower()]
-        step["description"] = relevant_sentences[:1] if relevant_sentences else "No relevant description found."
+        relevant_sentences = [
+            s for s in sentences if label["description"].lower() in s.lower()
+        ]
+        step["description"] = (
+            relevant_sentences[:1]
+            if relevant_sentences
+            else "No relevant description found."
+        )
         steps.append(step)
 
     return steps
 
+
 # Main function
 def main():
     # Replace with actual video IDs
-    video_ids = [os.getenv(f'YOUTUBE_ID_{i}') for i in range(1, 4)]
+    video_ids = [os.getenv(f"YOUTUBE_ID_{i}") for i in range(1, 4)]
     video_details = fetch_video_details(video_ids)
 
     print("Fetched video details:")
@@ -141,24 +175,37 @@ def main():
             extracted_audio = extract_audio(downloaded_path, audio_path)
 
             print(f"Uploading audio to Google Cloud Storage: {video['title']}")
-            gcs_uri = upload_to_gcs("bucket-for-video-analysis-viransh", extracted_audio, f"{video['video_id']}.wav")
+            gcs_uri_audio = upload_to_gcs(
+                "bucket-for-video-analysis-viransh",
+                extracted_audio,
+                f"{video['video_id']}.wav",
+            )
 
             print(f"Transcribing audio: {video['title']}")
-            transcription = transcribe_audio(extracted_audio)
+            transcription = transcribe_audio(gcs_uri_audio)
 
             print(f"Uploading Video to Google Cloud Storage: {video['title']}")
-            gcs_uri = upload_to_gcs("bucket-for-video-analysis-viransh", downloaded_path, f"{video['video_id']}.mkv")
+            gcs_uri_video = upload_to_gcs(
+                "bucket-for-video-analysis-viransh",
+                downloaded_path,
+                f"{video['video_id']}.mkv",
+            )
 
             print(f"Analyzing video: {video['title']}")
-            video_analysis = analyze_video(downloaded_path)
+            video_analysis = analyze_video(gcs_uri_video)
 
             print(f"Combining results for: {video['title']}")
             steps = combine_results(transcription, video_analysis)
 
-            print(f"\nSteps for '{video['title']}':")
-            for step in steps:
-                print(f"- Action: {step['action']} (Time: {step['start_time']}s to {step['end_time']}s)")
-                print(f"  Description: {step['description']}")
+            # Write the steps to a file
+            with open(f"Steps/{video['title']}.txt", "w") as f:
+                f.write(f"Steps for '{video['title']}':\n")
+                for step in steps:
+                    f.write(
+                        f"- Action: {step['action']} (Time: {step['start_time']}s to {step['end_time']}s)\n"
+                    )
+                    f.write(f"  Description: {step['description']}\n")
+
 
 if __name__ == "__main__":
     main()

@@ -1,74 +1,506 @@
-<html><head><title>Novel Viewer</title><style>
-                body {
-                    font-family: Roboto, Arial, sans-serif;
-                    margin: 2em auto;
-                    max-width: 800px;
-                    background-color: #fdf6e3;
-                    color: #333;
-                }
-                .navigation {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 2em;
-                }
-                .navigation button {
-                    padding: 0.5em 1em;
-                    background-color: #007BFF;
-                    color: white;
-                    border: none;
-                    border-radius: 5px;
-                    cursor: pointer;
-                }
-                .navigation button:hover {
-                    background-color: #0056b3;
-                }
-                #content {
-                    white-space: pre-wrap;
-                    line-height: 1.6;
-                }
-            </style><script>
-                let files = ['Online Games, FC\\ExtractedTexts\\Page_1.txt', 'Online Games, FC\\ExtractedTexts\\Page_2.txt', 'Online Games, FC\\ExtractedTexts\\Page_3.txt', 'Online Games, FC\\ExtractedTexts\\Page_4.txt', 'Online Games, FC\\ExtractedTexts\\Page_5.txt', 'Online Games, FC\\ExtractedTexts\\Page_6.txt', 'Online Games, FC\\ExtractedTexts\\Page_7.txt', 'Online Games, FC\\ExtractedTexts\\Page_8.txt', 'Online Games, FC\\ExtractedTexts\\Page_9.txt', 'Online Games, FC\\ExtractedTexts\\Page_10.txt', 'Online Games, FC\\ExtractedTexts\\Page_11.txt', 'Online Games, FC\\ExtractedTexts\\Page_12.txt', 'Online Games, FC\\ExtractedTexts\\Page_13.txt', 'Online Games, FC\\ExtractedTexts\\Page_14.txt', 'Online Games, FC\\ExtractedTexts\\Page_15.txt', 'Online Games, FC\\ExtractedTexts\\Page_16.txt', 'Online Games, FC\\ExtractedTexts\\Page_17.txt', 'Online Games, FC\\ExtractedTexts\\Page_18.txt', 'Online Games, FC\\ExtractedTexts\\Page_19.txt', 'Online Games, FC\\ExtractedTexts\\Page_20.txt', 'Online Games, FC\\ExtractedTexts\\Page_21.txt', 'Online Games, FC\\ExtractedTexts\\Page_22.txt', 'Online Games, FC\\ExtractedTexts\\Page_23.txt', 'Online Games, FC\\ExtractedTexts\\Page_24.txt', 'Online Games, FC\\ExtractedTexts\\Page_25.txt', 'Online Games, FC\\ExtractedTexts\\Page_26.txt', 'Online Games, FC\\ExtractedTexts\\Page_27.txt', 'Online Games, FC\\ExtractedTexts\\Page_28.txt', 'Online Games, FC\\ExtractedTexts\\Page_29.txt', 'Online Games, FC\\ExtractedTexts\\Page_30.txt', 'Online Games, FC\\ExtractedTexts\\Page_31.txt', 'Online Games, FC\\ExtractedTexts\\Page_32.txt', 'Online Games, FC\\ExtractedTexts\\Page_33.txt', 'Online Games, FC\\ExtractedTexts\\Page_34.txt', 'Online Games, FC\\ExtractedTexts\\Page_35.txt', 'Online Games, FC\\ExtractedTexts\\Page_36.txt', 'Online Games, FC\\ExtractedTexts\\Page_37.txt', 'Online Games, FC\\ExtractedTexts\\Page_38.txt', 'Online Games, FC\\ExtractedTexts\\Page_39.txt', 'Online Games, FC\\ExtractedTexts\\Page_40.txt', 'Online Games, FC\\ExtractedTexts\\Page_41.txt', 'Online Games, FC\\ExtractedTexts\\Page_42.txt', 'Online Games, FC\\ExtractedTexts\\Page_43.txt', 'Online Games, FC\\ExtractedTexts\\Page_44.txt', 'Online Games, FC\\ExtractedTexts\\Page_45.txt', 'Online Games, FC\\ExtractedTexts\\Page_46.txt', 'Online Games, FC\\ExtractedTexts\\Page_47.txt', 'Online Games, FC\\ExtractedTexts\\Page_48.txt', 'Online Games, FC\\ExtractedTexts\\Page_49.txt', 'Online Games, FC\\ExtractedTexts\\Page_50.txt', 'Online Games, FC\\ExtractedTexts\\Page_51.txt', 'Online Games, FC\\ExtractedTexts\\Page_52.txt', 'Online Games, FC\\ExtractedTexts\\Page_53.txt', 'Online Games, FC\\ExtractedTexts\\Page_54.txt', 'Online Games, FC\\ExtractedTexts\\Page_55.txt', 'Online Games, FC\\ExtractedTexts\\Page_56.txt', 'Online Games, FC\\ExtractedTexts\\Page_57.txt', 'Online Games, FC\\ExtractedTexts\\Page_58.txt', 'Online Games, FC\\ExtractedTexts\\Page_59.txt', 'Online Games, FC\\ExtractedTexts\\Page_60.txt', 'Online Games, FC\\ExtractedTexts\\Page_61.txt', 'Online Games, FC\\ExtractedTexts\\Page_62.txt', 'Online Games, FC\\ExtractedTexts\\Page_63.txt', 'Online Games, FC\\ExtractedTexts\\Page_64.txt', 'Online Games, FC\\ExtractedTexts\\Page_65.txt', 'Online Games, FC\\ExtractedTexts\\Page_66.txt', 'Online Games, FC\\ExtractedTexts\\Page_67.txt', 'Online Games, FC\\ExtractedTexts\\Page_68.txt', 'Online Games, FC\\ExtractedTexts\\Page_69.txt', 'Online Games, FC\\ExtractedTexts\\Page_70.txt', 'Online Games, FC\\ExtractedTexts\\Page_71.txt', 'Online Games, FC\\ExtractedTexts\\Page_72.txt', 'Online Games, FC\\ExtractedTexts\\Page_73.txt', 'Online Games, FC\\ExtractedTexts\\Page_74.txt', 'Online Games, FC\\ExtractedTexts\\Page_75.txt', 'Online Games, FC\\ExtractedTexts\\Page_76.txt', 'Online Games, FC\\ExtractedTexts\\Page_77.txt', 'Online Games, FC\\ExtractedTexts\\Page_78.txt', 'Online Games, FC\\ExtractedTexts\\Page_79.txt', 'Online Games, FC\\ExtractedTexts\\Page_80.txt', 'Online Games, FC\\ExtractedTexts\\Page_81.txt', 'Online Games, FC\\ExtractedTexts\\Page_82.txt', 'Online Games, FC\\ExtractedTexts\\Page_83.txt', 'Online Games, FC\\ExtractedTexts\\Page_84.txt', 'Online Games, FC\\ExtractedTexts\\Page_85.txt', 'Online Games, FC\\ExtractedTexts\\Page_86.txt', 'Online Games, FC\\ExtractedTexts\\Page_87.txt', 'Online Games, FC\\ExtractedTexts\\Page_88.txt', 'Online Games, FC\\ExtractedTexts\\Page_89.txt', 'Online Games, FC\\ExtractedTexts\\Page_90.txt', 'Online Games, FC\\ExtractedTexts\\Page_91.txt', 'Online Games, FC\\ExtractedTexts\\Page_92.txt', 'Online Games, FC\\ExtractedTexts\\Page_93.txt', 'Online Games, FC\\ExtractedTexts\\Page_94.txt', 'Online Games, FC\\ExtractedTexts\\Page_95.txt', 'Online Games, FC\\ExtractedTexts\\Page_96.txt', 'Online Games, FC\\ExtractedTexts\\Page_97.txt', 'Online Games, FC\\ExtractedTexts\\Page_98.txt', 'Online Games, FC\\ExtractedTexts\\Page_99.txt', 'Online Games, FC\\ExtractedTexts\\Page_100.txt', 'Online Games, FC\\ExtractedTexts\\Page_101.txt', 'Online Games, FC\\ExtractedTexts\\Page_102.txt', 'Online Games, FC\\ExtractedTexts\\Page_103.txt', 'Online Games, FC\\ExtractedTexts\\Page_104.txt', 'Online Games, FC\\ExtractedTexts\\Page_105.txt', 'Online Games, FC\\ExtractedTexts\\Page_106.txt', 'Online Games, FC\\ExtractedTexts\\Page_107.txt', 'Online Games, FC\\ExtractedTexts\\Page_108.txt', 'Online Games, FC\\ExtractedTexts\\Page_109.txt', 'Online Games, FC\\ExtractedTexts\\Page_110.txt', 'Online Games, FC\\ExtractedTexts\\Page_111.txt', 'Online Games, FC\\ExtractedTexts\\Page_112.txt', 'Online Games, FC\\ExtractedTexts\\Page_113.txt', 'Online Games, FC\\ExtractedTexts\\Page_114.txt', 'Online Games, FC\\ExtractedTexts\\Page_115.txt', 'Online Games, FC\\ExtractedTexts\\Page_116.txt', 'Online Games, FC\\ExtractedTexts\\Page_117.txt', 'Online Games, FC\\ExtractedTexts\\Page_118.txt', 'Online Games, FC\\ExtractedTexts\\Page_119.txt', 'Online Games, FC\\ExtractedTexts\\Page_120.txt', 'Online Games, FC\\ExtractedTexts\\Page_121.txt', 'Online Games, FC\\ExtractedTexts\\Page_122.txt', 'Online Games, FC\\ExtractedTexts\\Page_123.txt', 'Online Games, FC\\ExtractedTexts\\Page_124.txt', 'Online Games, FC\\ExtractedTexts\\Page_125.txt', 'Online Games, FC\\ExtractedTexts\\Page_126.txt', 'Online Games, FC\\ExtractedTexts\\Page_127.txt', 'Online Games, FC\\ExtractedTexts\\Page_128.txt', 'Online Games, FC\\ExtractedTexts\\Page_129.txt', 'Online Games, FC\\ExtractedTexts\\Page_130.txt', 'Online Games, FC\\ExtractedTexts\\Page_131.txt', 'Online Games, FC\\ExtractedTexts\\Page_132.txt', 'Online Games, FC\\ExtractedTexts\\Page_133.txt', 'Online Games, FC\\ExtractedTexts\\Page_134.txt', 'Online Games, FC\\ExtractedTexts\\Page_135.txt', 'Online Games, FC\\ExtractedTexts\\Page_136.txt', 'Online Games, FC\\ExtractedTexts\\Page_137.txt', 'Online Games, FC\\ExtractedTexts\\Page_138.txt', 'Online Games, FC\\ExtractedTexts\\Page_139.txt', 'Online Games, FC\\ExtractedTexts\\Page_140.txt', 'Online Games, FC\\ExtractedTexts\\Page_141.txt', 'Online Games, FC\\ExtractedTexts\\Page_142.txt', 'Online Games, FC\\ExtractedTexts\\Page_143.txt', 'Online Games, FC\\ExtractedTexts\\Page_144.txt', 'Online Games, FC\\ExtractedTexts\\Page_145.txt', 'Online Games, FC\\ExtractedTexts\\Page_146.txt', 'Online Games, FC\\ExtractedTexts\\Page_147.txt', 'Online Games, FC\\ExtractedTexts\\Page_148.txt', 'Online Games, FC\\ExtractedTexts\\Page_149.txt', 'Online Games, FC\\ExtractedTexts\\Page_150.txt', 'Online Games, FC\\ExtractedTexts\\Page_151.txt', 'Online Games, FC\\ExtractedTexts\\Page_152.txt', 'Online Games, FC\\ExtractedTexts\\Page_153.txt', 'Online Games, FC\\ExtractedTexts\\Page_154.txt', 'Online Games, FC\\ExtractedTexts\\Page_155.txt', 'Online Games, FC\\ExtractedTexts\\Page_156.txt', 'Online Games, FC\\ExtractedTexts\\Page_157.txt', 'Online Games, FC\\ExtractedTexts\\Page_158.txt', 'Online Games, FC\\ExtractedTexts\\Page_159.txt', 'Online Games, FC\\ExtractedTexts\\Page_160.txt', 'Online Games, FC\\ExtractedTexts\\Page_161.txt', 'Online Games, FC\\ExtractedTexts\\Page_162.txt', 'Online Games, FC\\ExtractedTexts\\Page_163.txt', 'Online Games, FC\\ExtractedTexts\\Page_164.txt', 'Online Games, FC\\ExtractedTexts\\Page_165.txt', 'Online Games, FC\\ExtractedTexts\\Page_166.txt', 'Online Games, FC\\ExtractedTexts\\Page_167.txt', 'Online Games, FC\\ExtractedTexts\\Page_168.txt', 'Online Games, FC\\ExtractedTexts\\Page_169.txt', 'Online Games, FC\\ExtractedTexts\\Page_170.txt', 'Online Games, FC\\ExtractedTexts\\Page_171.txt', 'Online Games, FC\\ExtractedTexts\\Page_172.txt', 'Online Games, FC\\ExtractedTexts\\Page_173.txt', 'Online Games, FC\\ExtractedTexts\\Page_174.txt', 'Online Games, FC\\ExtractedTexts\\Page_175.txt', 'Online Games, FC\\ExtractedTexts\\Page_176.txt', 'Online Games, FC\\ExtractedTexts\\Page_177.txt', 'Online Games, FC\\ExtractedTexts\\Page_178.txt', 'Online Games, FC\\ExtractedTexts\\Page_179.txt', 'Online Games, FC\\ExtractedTexts\\Page_180.txt', 'Online Games, FC\\ExtractedTexts\\Page_181.txt', 'Online Games, FC\\ExtractedTexts\\Page_182.txt', 'Online Games, FC\\ExtractedTexts\\Page_183.txt', 'Online Games, FC\\ExtractedTexts\\Page_184.txt', 'Online Games, FC\\ExtractedTexts\\Page_185.txt', 'Online Games, FC\\ExtractedTexts\\Page_186.txt', 'Online Games, FC\\ExtractedTexts\\Page_187.txt', 'Online Games, FC\\ExtractedTexts\\Page_188.txt', 'Online Games, FC\\ExtractedTexts\\Page_189.txt', 'Online Games, FC\\ExtractedTexts\\Page_190.txt', 'Online Games, FC\\ExtractedTexts\\Page_191.txt', 'Online Games, FC\\ExtractedTexts\\Page_192.txt', 'Online Games, FC\\ExtractedTexts\\Page_193.txt', 'Online Games, FC\\ExtractedTexts\\Page_194.txt', 'Online Games, FC\\ExtractedTexts\\Page_195.txt', 'Online Games, FC\\ExtractedTexts\\Page_196.txt', 'Online Games, FC\\ExtractedTexts\\Page_197.txt', 'Online Games, FC\\ExtractedTexts\\Page_198.txt', 'Online Games, FC\\ExtractedTexts\\Page_199.txt', 'Online Games, FC\\ExtractedTexts\\Page_200.txt', 'Online Games, FC\\ExtractedTexts\\Page_201.txt', 'Online Games, FC\\ExtractedTexts\\Page_202.txt', 'Online Games, FC\\ExtractedTexts\\Page_203.txt', 'Online Games, FC\\ExtractedTexts\\Page_204.txt', 'Online Games, FC\\ExtractedTexts\\Page_205.txt', 'Online Games, FC\\ExtractedTexts\\Page_206.txt', 'Online Games, FC\\ExtractedTexts\\Page_207.txt', 'Online Games, FC\\ExtractedTexts\\Page_208.txt', 'Online Games, FC\\ExtractedTexts\\Page_209.txt', 'Online Games, FC\\ExtractedTexts\\Page_210.txt', 'Online Games, FC\\ExtractedTexts\\Page_211.txt', 'Online Games, FC\\ExtractedTexts\\Page_212.txt', 'Online Games, FC\\ExtractedTexts\\Page_213.txt', 'Online Games, FC\\ExtractedTexts\\Page_214.txt', 'Online Games, FC\\ExtractedTexts\\Page_215.txt', 'Online Games, FC\\ExtractedTexts\\Page_216.txt', 'Online Games, FC\\ExtractedTexts\\Page_217.txt', 'Online Games, FC\\ExtractedTexts\\Page_218.txt', 'Online Games, FC\\ExtractedTexts\\Page_219.txt', 'Online Games, FC\\ExtractedTexts\\Page_220.txt', 'Online Games, FC\\ExtractedTexts\\Page_221.txt', 'Online Games, FC\\ExtractedTexts\\Page_222.txt', 'Online Games, FC\\ExtractedTexts\\Page_223.txt', 'Online Games, FC\\ExtractedTexts\\Page_224.txt', 'Online Games, FC\\ExtractedTexts\\Page_225.txt', 'Online Games, FC\\ExtractedTexts\\Page_226.txt', 'Online Games, FC\\ExtractedTexts\\Page_227.txt', 'Online Games, FC\\ExtractedTexts\\Page_228.txt', 'Online Games, FC\\ExtractedTexts\\Page_229.txt', 'Online Games, FC\\ExtractedTexts\\Page_230.txt', 'Online Games, FC\\ExtractedTexts\\Page_231.txt', 'Online Games, FC\\ExtractedTexts\\Page_232.txt', 'Online Games, FC\\ExtractedTexts\\Page_233.txt', 'Online Games, FC\\ExtractedTexts\\Page_234.txt', 'Online Games, FC\\ExtractedTexts\\Page_235.txt', 'Online Games, FC\\ExtractedTexts\\Page_236.txt', 'Online Games, FC\\ExtractedTexts\\Page_237.txt', 'Online Games, FC\\ExtractedTexts\\Page_238.txt', 'Online Games, FC\\ExtractedTexts\\Page_239.txt', 'Online Games, FC\\ExtractedTexts\\Page_240.txt', 'Online Games, FC\\ExtractedTexts\\Page_241.txt', 'Online Games, FC\\ExtractedTexts\\Page_242.txt', 'Online Games, FC\\ExtractedTexts\\Page_243.txt', 'Online Games, FC\\ExtractedTexts\\Page_244.txt', 'Online Games, FC\\ExtractedTexts\\Page_245.txt', 'Online Games, FC\\ExtractedTexts\\Page_246.txt', 'Online Games, FC\\ExtractedTexts\\Page_247.txt', 'Online Games, FC\\ExtractedTexts\\Page_248.txt', 'Online Games, FC\\ExtractedTexts\\Page_249.txt', 'Online Games, FC\\ExtractedTexts\\Page_250.txt', 'Online Games, FC\\ExtractedTexts\\Page_251.txt', 'Online Games, FC\\ExtractedTexts\\Page_252.txt', 'Online Games, FC\\ExtractedTexts\\Page_253.txt', 'Online Games, FC\\ExtractedTexts\\Page_254.txt', 'Online Games, FC\\ExtractedTexts\\Page_255.txt', 'Online Games, FC\\ExtractedTexts\\Page_256.txt', 'Online Games, FC\\ExtractedTexts\\Page_257.txt', 'Online Games, FC\\ExtractedTexts\\Page_258.txt', 'Online Games, FC\\ExtractedTexts\\Page_259.txt', 'Online Games, FC\\ExtractedTexts\\Page_260.txt', 'Online Games, FC\\ExtractedTexts\\Page_261.txt', 'Online Games, FC\\ExtractedTexts\\Page_262.txt', 'Online Games, FC\\ExtractedTexts\\Page_263.txt', 'Online Games, FC\\ExtractedTexts\\Page_264.txt', 'Online Games, FC\\ExtractedTexts\\Page_265.txt', 'Online Games, FC\\ExtractedTexts\\Page_266.txt', 'Online Games, FC\\ExtractedTexts\\Page_267.txt', 'Online Games, FC\\ExtractedTexts\\Page_268.txt', 'Online Games, FC\\ExtractedTexts\\Page_269.txt', 'Online Games, FC\\ExtractedTexts\\Page_270.txt', 'Online Games, FC\\ExtractedTexts\\Page_271.txt', 'Online Games, FC\\ExtractedTexts\\Page_272.txt', 'Online Games, FC\\ExtractedTexts\\Page_273.txt', 'Online Games, FC\\ExtractedTexts\\Page_274.txt', 'Online Games, FC\\ExtractedTexts\\Page_275.txt', 'Online Games, FC\\ExtractedTexts\\Page_276.txt', 'Online Games, FC\\ExtractedTexts\\Page_277.txt', 'Online Games, FC\\ExtractedTexts\\Page_278.txt', 'Online Games, FC\\ExtractedTexts\\Page_279.txt', 'Online Games, FC\\ExtractedTexts\\Page_280.txt', 'Online Games, FC\\ExtractedTexts\\Page_281.txt', 'Online Games, FC\\ExtractedTexts\\Page_282.txt', 'Online Games, FC\\ExtractedTexts\\Page_283.txt', 'Online Games, FC\\ExtractedTexts\\Page_284.txt', 'Online Games, FC\\ExtractedTexts\\Page_285.txt', 'Online Games, FC\\ExtractedTexts\\Page_286.txt', 'Online Games, FC\\ExtractedTexts\\Page_287.txt', 'Online Games, FC\\ExtractedTexts\\Page_288.txt', 'Online Games, FC\\ExtractedTexts\\Page_289.txt', 'Online Games, FC\\ExtractedTexts\\Page_290.txt', 'Online Games, FC\\ExtractedTexts\\Page_291.txt', 'Online Games, FC\\ExtractedTexts\\Page_292.txt', 'Online Games, FC\\ExtractedTexts\\Page_293.txt', 'Online Games, FC\\ExtractedTexts\\Page_294.txt', 'Online Games, FC\\ExtractedTexts\\Page_295.txt', 'Online Games, FC\\ExtractedTexts\\Page_296.txt', 'Online Games, FC\\ExtractedTexts\\Page_297.txt', 'Online Games, FC\\ExtractedTexts\\Page_298.txt', 'Online Games, FC\\ExtractedTexts\\Page_299.txt', 'Online Games, FC\\ExtractedTexts\\Page_300.txt', 'Online Games, FC\\ExtractedTexts\\Page_301.txt', 'Online Games, FC\\ExtractedTexts\\Page_302.txt', 'Online Games, FC\\ExtractedTexts\\Page_303.txt', 'Online Games, FC\\ExtractedTexts\\Page_304.txt', 'Online Games, FC\\ExtractedTexts\\Page_305.txt', 'Online Games, FC\\ExtractedTexts\\Page_306.txt', 'Online Games, FC\\ExtractedTexts\\Page_307.txt', 'Online Games, FC\\ExtractedTexts\\Page_308.txt', 'Online Games, FC\\ExtractedTexts\\Page_309.txt', 'Online Games, FC\\ExtractedTexts\\Page_310.txt', 'Online Games, FC\\ExtractedTexts\\Page_311.txt', 'Online Games, FC\\ExtractedTexts\\Page_312.txt', 'Online Games, FC\\ExtractedTexts\\Page_313.txt', 'Online Games, FC\\ExtractedTexts\\Page_314.txt', 'Online Games, FC\\ExtractedTexts\\Page_315.txt', 'Online Games, FC\\ExtractedTexts\\Page_316.txt', 'Online Games, FC\\ExtractedTexts\\Page_317.txt', 'Online Games, FC\\ExtractedTexts\\Page_318.txt', 'Online Games, FC\\ExtractedTexts\\Page_319.txt', 'Online Games, FC\\ExtractedTexts\\Page_320.txt', 'Online Games, FC\\ExtractedTexts\\Page_321.txt', 'Online Games, FC\\ExtractedTexts\\Page_322.txt', 'Online Games, FC\\ExtractedTexts\\Page_323.txt', 'Online Games, FC\\ExtractedTexts\\Page_324.txt', 'Online Games, FC\\ExtractedTexts\\Page_325.txt', 'Online Games, FC\\ExtractedTexts\\Page_326.txt', 'Online Games, FC\\ExtractedTexts\\Page_327.txt', 'Online Games, FC\\ExtractedTexts\\Page_328.txt', 'Online Games, FC\\ExtractedTexts\\Page_329.txt', 'Online Games, FC\\ExtractedTexts\\Page_330.txt', 'Online Games, FC\\ExtractedTexts\\Page_331.txt', 'Online Games, FC\\ExtractedTexts\\Page_332.txt', 'Online Games, FC\\ExtractedTexts\\Page_333.txt', 'Online Games, FC\\ExtractedTexts\\Page_334.txt', 'Online Games, FC\\ExtractedTexts\\Page_335.txt', 'Online Games, FC\\ExtractedTexts\\Page_336.txt', 'Online Games, FC\\ExtractedTexts\\Page_337.txt', 'Online Games, FC\\ExtractedTexts\\Page_338.txt', 'Online Games, FC\\ExtractedTexts\\Page_339.txt', 'Online Games, FC\\ExtractedTexts\\Page_340.txt', 'Online Games, FC\\ExtractedTexts\\Page_341.txt', 'Online Games, FC\\ExtractedTexts\\Page_342.txt', 'Online Games, FC\\ExtractedTexts\\Page_343.txt', 'Online Games, FC\\ExtractedTexts\\Page_344.txt', 'Online Games, FC\\ExtractedTexts\\Page_345.txt', 'Online Games, FC\\ExtractedTexts\\Page_346.txt', 'Online Games, FC\\ExtractedTexts\\Page_347.txt', 'Online Games, FC\\ExtractedTexts\\Page_348.txt', 'Online Games, FC\\ExtractedTexts\\Page_349.txt', 'Online Games, FC\\ExtractedTexts\\Page_350.txt', 'Online Games, FC\\ExtractedTexts\\Page_351.txt', 'Online Games, FC\\ExtractedTexts\\Page_352.txt', 'Online Games, FC\\ExtractedTexts\\Page_353.txt', 'Online Games, FC\\ExtractedTexts\\Page_354.txt', 'Online Games, FC\\ExtractedTexts\\Page_355.txt', 'Online Games, FC\\ExtractedTexts\\Page_356.txt', 'Online Games, FC\\ExtractedTexts\\Page_357.txt', 'Online Games, FC\\ExtractedTexts\\Page_358.txt', 'Online Games, FC\\ExtractedTexts\\Page_359.txt', 'Online Games, FC\\ExtractedTexts\\Page_360.txt', 'Online Games, FC\\ExtractedTexts\\Page_361.txt', 'Online Games, FC\\ExtractedTexts\\Page_362.txt', 'Online Games, FC\\ExtractedTexts\\Page_363.txt', 'Online Games, FC\\ExtractedTexts\\Page_364.txt', 'Online Games, FC\\ExtractedTexts\\Page_365.txt', 'Online Games, FC\\ExtractedTexts\\Page_366.txt', 'Online Games, FC\\ExtractedTexts\\Page_367.txt', 'Online Games, FC\\ExtractedTexts\\Page_368.txt', 'Online Games, FC\\ExtractedTexts\\Page_369.txt', 'Online Games, FC\\ExtractedTexts\\Page_370.txt', 'Online Games, FC\\ExtractedTexts\\Page_371.txt', 'Online Games, FC\\ExtractedTexts\\Page_372.txt', 'Online Games, FC\\ExtractedTexts\\Page_373.txt', 'Online Games, FC\\ExtractedTexts\\Page_374.txt', 'Online Games, FC\\ExtractedTexts\\Page_375.txt', 'Online Games, FC\\ExtractedTexts\\Page_376.txt', 'Online Games, FC\\ExtractedTexts\\Page_377.txt', 'Online Games, FC\\ExtractedTexts\\Page_378.txt', 'Online Games, FC\\ExtractedTexts\\Page_379.txt', 'Online Games, FC\\ExtractedTexts\\Page_380.txt', 'Online Games, FC\\ExtractedTexts\\Page_381.txt', 'Online Games, FC\\ExtractedTexts\\Page_382.txt', 'Online Games, FC\\ExtractedTexts\\Page_383.txt', 'Online Games, FC\\ExtractedTexts\\Page_384.txt', 'Online Games, FC\\ExtractedTexts\\Page_385.txt', 'Online Games, FC\\ExtractedTexts\\Page_386.txt', 'Online Games, FC\\ExtractedTexts\\Page_387.txt', 'Online Games, FC\\ExtractedTexts\\Page_388.txt', 'Online Games, FC\\ExtractedTexts\\Page_389.txt', 'Online Games, FC\\ExtractedTexts\\Page_390.txt', 'Online Games, FC\\ExtractedTexts\\Page_391.txt', 'Online Games, FC\\ExtractedTexts\\Page_392.txt', 'Online Games, FC\\ExtractedTexts\\Page_393.txt', 'Online Games, FC\\ExtractedTexts\\Page_394.txt', 'Online Games, FC\\ExtractedTexts\\Page_395.txt', 'Online Games, FC\\ExtractedTexts\\Page_396.txt', 'Online Games, FC\\ExtractedTexts\\Page_397.txt', 'Online Games, FC\\ExtractedTexts\\Page_398.txt', 'Online Games, FC\\ExtractedTexts\\Page_399.txt', 'Online Games, FC\\ExtractedTexts\\Page_400.txt', 'Online Games, FC\\ExtractedTexts\\Page_401.txt', 'Online Games, FC\\ExtractedTexts\\Page_402.txt', 'Online Games, FC\\ExtractedTexts\\Page_403.txt', 'Online Games, FC\\ExtractedTexts\\Page_404.txt', 'Online Games, FC\\ExtractedTexts\\Page_405.txt', 'Online Games, FC\\ExtractedTexts\\Page_406.txt', 'Online Games, FC\\ExtractedTexts\\Page_407.txt', 'Online Games, FC\\ExtractedTexts\\Page_408.txt', 'Online Games, FC\\ExtractedTexts\\Page_409.txt', 'Online Games, FC\\ExtractedTexts\\Page_410.txt', 'Online Games, FC\\ExtractedTexts\\Page_411.txt', 'Online Games, FC\\ExtractedTexts\\Page_412.txt'];
-                let currentIndex = 0;
+<html>
+  <head>
+    <title>Novel Viewer</title>
+    <style>
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        margin: 2em auto;
+        max-width: 800px;
+        background-color: #fdf6e3;
+        color: #333;
+      }
+      .navigation {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2em;
+      }
+      .navigation button {
+        padding: 0.5em 1em;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .navigation button:hover {
+        background-color: #0056b3;
+      }
+      #content {
+        white-space: pre-wrap;
+        line-height: 1.6;
+      }
+    </style>
+    <script>
+      let files = [
+        "Online Games, FC\\ExtractedTexts\\Page_1.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_2.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_3.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_4.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_5.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_6.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_7.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_8.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_9.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_10.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_11.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_12.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_13.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_14.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_15.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_16.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_17.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_18.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_19.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_20.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_21.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_22.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_23.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_24.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_25.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_26.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_27.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_28.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_29.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_30.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_31.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_32.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_33.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_34.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_35.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_36.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_37.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_38.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_39.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_40.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_41.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_42.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_43.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_44.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_45.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_46.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_47.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_48.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_49.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_50.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_51.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_52.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_53.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_54.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_55.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_56.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_57.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_58.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_59.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_60.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_61.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_62.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_63.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_64.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_65.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_66.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_67.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_68.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_69.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_70.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_71.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_72.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_73.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_74.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_75.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_76.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_77.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_78.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_79.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_80.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_81.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_82.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_83.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_84.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_85.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_86.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_87.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_88.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_89.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_90.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_91.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_92.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_93.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_94.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_95.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_96.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_97.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_98.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_99.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_100.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_101.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_102.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_103.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_104.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_105.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_106.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_107.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_108.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_109.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_110.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_111.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_112.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_113.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_114.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_115.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_116.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_117.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_118.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_119.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_120.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_121.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_122.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_123.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_124.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_125.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_126.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_127.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_128.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_129.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_130.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_131.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_132.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_133.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_134.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_135.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_136.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_137.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_138.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_139.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_140.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_141.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_142.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_143.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_144.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_145.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_146.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_147.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_148.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_149.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_150.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_151.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_152.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_153.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_154.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_155.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_156.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_157.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_158.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_159.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_160.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_161.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_162.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_163.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_164.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_165.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_166.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_167.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_168.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_169.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_170.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_171.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_172.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_173.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_174.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_175.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_176.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_177.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_178.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_179.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_180.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_181.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_182.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_183.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_184.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_185.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_186.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_187.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_188.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_189.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_190.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_191.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_192.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_193.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_194.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_195.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_196.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_197.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_198.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_199.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_200.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_201.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_202.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_203.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_204.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_205.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_206.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_207.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_208.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_209.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_210.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_211.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_212.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_213.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_214.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_215.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_216.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_217.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_218.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_219.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_220.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_221.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_222.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_223.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_224.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_225.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_226.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_227.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_228.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_229.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_230.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_231.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_232.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_233.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_234.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_235.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_236.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_237.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_238.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_239.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_240.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_241.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_242.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_243.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_244.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_245.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_246.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_247.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_248.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_249.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_250.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_251.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_252.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_253.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_254.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_255.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_256.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_257.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_258.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_259.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_260.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_261.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_262.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_263.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_264.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_265.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_266.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_267.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_268.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_269.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_270.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_271.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_272.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_273.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_274.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_275.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_276.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_277.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_278.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_279.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_280.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_281.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_282.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_283.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_284.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_285.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_286.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_287.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_288.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_289.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_290.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_291.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_292.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_293.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_294.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_295.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_296.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_297.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_298.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_299.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_300.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_301.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_302.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_303.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_304.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_305.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_306.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_307.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_308.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_309.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_310.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_311.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_312.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_313.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_314.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_315.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_316.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_317.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_318.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_319.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_320.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_321.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_322.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_323.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_324.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_325.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_326.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_327.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_328.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_329.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_330.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_331.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_332.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_333.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_334.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_335.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_336.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_337.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_338.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_339.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_340.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_341.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_342.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_343.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_344.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_345.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_346.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_347.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_348.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_349.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_350.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_351.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_352.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_353.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_354.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_355.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_356.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_357.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_358.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_359.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_360.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_361.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_362.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_363.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_364.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_365.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_366.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_367.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_368.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_369.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_370.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_371.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_372.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_373.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_374.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_375.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_376.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_377.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_378.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_379.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_380.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_381.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_382.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_383.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_384.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_385.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_386.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_387.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_388.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_389.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_390.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_391.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_392.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_393.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_394.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_395.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_396.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_397.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_398.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_399.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_400.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_401.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_402.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_403.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_404.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_405.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_406.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_407.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_408.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_409.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_410.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_411.txt",
+        "Online Games, FC\\ExtractedTexts\\Page_412.txt",
+      ];
+      let currentIndex = 0;
 
-                function loadFile(index) {
-                    if (index < 0 || index >= files.length) return;
-                    fetch(files[index])
-                        .then(response => response.text())
-                        .then(data => {
-                            const formattedData = data.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
-                            document.getElementById('content').innerHTML = formattedData;
-                            currentIndex = index;
-                            document.getElementById('pageNumber').innerText = 'Page ' + (346 + index);
-                            document.getElementById('pageNumber2').innerText = 'Page ' + (346 + index);
-                        })
-                        .catch(err => {
-                            console.error('Failed to load file:', err);
-                        });
-                }
+      function loadFile(index) {
+        if (index < 0 || index >= files.length) return;
+        fetch(files[index])
+          .then((response) => response.text())
+          .then((data) => {
+            const formattedData = data
+              .replace(/\n\n/g, "<br><br>")
+              .replace(/\n/g, "<br>");
+            document.getElementById("content").innerHTML = formattedData;
+            currentIndex = index;
+            document.getElementById("pageNumber").innerText =
+              "Page " + (346 + index);
+            document.getElementById("pageNumber2").innerText =
+              "Page " + (346 + index);
+          })
+          .catch((err) => {
+            console.error("Failed to load file:", err);
+          });
+      }
 
-                function nextPage() {
-                    if (currentIndex < files.length - 1) {
-                        loadFile(currentIndex + 1);
-                        window.scrollTo(0, 0);
-                    }
-                }
+      function nextPage() {
+        if (currentIndex < files.length - 1) {
+          loadFile(currentIndex + 1);
+          window.scrollTo(0, 0);
+        }
+      }
 
-                function prevPage() {
-                    if (currentIndex > 0) {
-                        loadFile(currentIndex - 1);
-                        window.scrollTo(0, 0);
-                    }
-                }
+      function prevPage() {
+        if (currentIndex > 0) {
+          loadFile(currentIndex - 1);
+          window.scrollTo(0, 0);
+        }
+      }
 
-                window.onload = () => {
-                    loadFile(384 - 346);
+      window.onload = () => {
+        loadFile(479 - 346);
 
-                    window.addEventListener("keydown", (event) => {
-                        if (event.key === "ArrowLeft") {
-                            prevPage();
-                        } else if (event.key === "ArrowRight") {
-                            nextPage();
-                        }
-                    });
-                };
-            </script></head><body><h1>Novel Viewer</h1><span id='pageNumber'></span><div id='content'></div><div class='navigation'><button onclick='prevPage()'>Previous</button><span id='pageNumber2'></span><button onclick='nextPage()'>Next</button></div></body></html>
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") {
+            prevPage();
+          } else if (event.key === "ArrowRight") {
+            nextPage();
+          }
+        });
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Novel Viewer</h1>
+    <span id="pageNumber"></span>
+    <div id="content"></div>
+    <div class="navigation">
+      <button onclick="prevPage()">Previous</button
+      ><span id="pageNumber2"></span><button onclick="nextPage()">Next</button>
+    </div>
+  </body>
+</html>

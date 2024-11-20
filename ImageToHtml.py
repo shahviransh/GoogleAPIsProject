@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT")
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 image_prefix = os.getenv("IMAGE_PREFIX")
 
 def extract_text_from_image(image_path):
