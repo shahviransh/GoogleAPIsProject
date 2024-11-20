@@ -12,7 +12,7 @@ load_dotenv()
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 image_prefix = os.getenv("IMAGE_PREFIX")
 missing_num = 3
-dir_path = "Gao Wu, Swallowed Star"
+dir_path = "Online Games, FC"
 
 
 def batch_extract_text_from_images(image_uris):
