@@ -123,7 +123,7 @@ def get_all_images(start, end):
     for i in range(start, end + 1):
         url = content_url.format(i)
         print(f"Fetching image from: {url}")
-        image_name = f"{dir_path}\\Images GIF\\{image_prefix} ({i - start}).gif"
+        image_name = os.path.join({dir_path},'Images GIF',f'{image_prefix} ({i - start}).gif')
 
         if os.path.exists(image_name):
                 print(f"Image already exists: {image_name}")

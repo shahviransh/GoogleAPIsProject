@@ -6,6 +6,7 @@ import subprocess
 from nltk.tokenize import sent_tokenize
 import nltk
 from dotenv import load_dotenv
+import re
 
 nltk.download("punkt")
 nltk.download("punkt_tab")
@@ -19,13 +20,15 @@ youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
 
 
 # Google Cloud Storage setup
-def upload_to_gcs(bucket_name, source_file_name, destination_blob_name):
+def upload_to_gcs(bucket_name, source_file_name, blob_name):
     client = storage.Client()
     bucket = client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
+    blob = bucket.blob(blob_name)
+    if blob.exists():
+        return f"gs://{bucket_name}/{blob_name}"
     blob.upload_from_filename(source_file_name)
-    print(f"File {source_file_name} uploaded to {destination_blob_name}.")
-    return f"gs://{bucket_name}/{destination_blob_name}"
+    print(f"File {source_file_name} uploaded to {blob_name}.")
+    return f"gs://{bucket_name}/{blob_name}"
 
 
 # Fetch details of YouTube videos
@@ -150,6 +153,10 @@ def combine_results(transcription, video_analysis):
 
     return steps
 
+def sanitize_filename(filename):
+    # Replace invalid characters with an underscore
+    return re.sub(r'[<>:"/\\|?*]', '_', filename)
+
 
 # Main function
 def main():
@@ -198,7 +205,7 @@ def main():
             steps = combine_results(transcription, video_analysis)
 
             # Write the steps to a file
-            with open(f"Steps/{video['title']}.txt", "w") as f:
+            with open(f"Steps/{video['title']}.txt", "w+") as f:
                 f.write(f"Steps for '{video['title']}':\n")
                 for step in steps:
                     f.write(
