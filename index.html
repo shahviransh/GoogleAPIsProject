@@ -1,0 +1,431 @@
+<html>
+  <head>
+    <title>Novel Viewer</title>
+    <style>
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        margin: 2em auto;
+        max-width: 800px;
+        background-color: #fdf6e3;
+        color: #333;
+      }
+      .navigation {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2em;
+      }
+      .navigation button {
+        padding: 0.5em 1em;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .navigation button:hover {
+        background-color: #0056b3;
+      }
+      #content {
+        white-space: pre-wrap;
+        line-height: 1.6;
+      }
+    </style>
+    <script>
+      let files = [
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_1.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_2.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_3.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_4.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_5.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_6.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_7.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_8.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_9.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_10.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_11.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_12.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_13.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_14.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_15.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_16.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_17.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_18.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_19.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_20.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_21.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_22.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_23.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_24.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_25.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_26.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_27.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_28.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_29.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_30.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_31.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_32.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_33.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_34.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_35.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_36.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_37.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_38.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_39.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_42.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_43.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_44.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_45.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_46.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_47.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_48.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_49.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_50.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_51.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_52.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_53.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_54.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_55.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_56.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_57.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_58.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_59.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_60.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_61.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_62.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_63.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_64.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_65.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_66.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_67.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_68.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_69.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_70.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_71.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_72.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_73.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_74.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_75.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_76.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_77.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_78.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_79.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_80.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_81.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_82.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_83.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_84.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_85.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_86.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_87.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_88.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_89.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_90.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_91.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_92.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_93.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_94.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_96.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_97.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_98.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_99.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_100.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_101.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_102.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_103.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_104.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_105.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_106.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_107.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_108.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_109.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_110.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_111.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_112.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_113.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_114.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_115.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_116.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_117.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_118.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_119.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_120.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_121.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_122.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_123.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_124.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_125.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_126.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_127.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_128.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_129.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_130.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_131.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_132.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_133.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_134.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_135.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_136.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_137.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_138.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_139.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_140.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_141.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_142.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_143.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_144.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_145.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_146.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_147.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_148.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_149.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_150.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_151.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_152.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_153.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_154.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_155.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_156.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_157.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_158.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_159.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_160.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_161.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_162.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_163.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_164.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_165.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_166.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_167.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_168.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_169.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_170.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_171.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_172.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_173.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_174.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_175.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_176.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_177.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_178.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_179.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_180.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_181.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_182.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_183.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_184.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_185.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_186.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_187.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_188.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_189.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_190.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_191.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_192.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_193.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_194.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_195.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_196.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_197.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_198.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_199.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_200.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_201.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_202.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_203.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_204.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_205.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_206.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_207.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_208.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_209.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_210.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_211.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_212.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_213.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_214.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_215.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_216.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_217.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_218.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_219.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_220.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_221.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_222.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_223.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_224.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_225.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_226.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_227.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_228.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_229.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_230.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_231.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_232.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_233.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_234.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_235.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_236.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_237.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_238.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_239.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_240.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_241.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_242.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_243.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_244.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_245.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_246.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_247.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_248.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_249.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_250.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_251.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_252.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_253.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_254.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_255.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_256.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_257.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_258.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_259.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_260.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_261.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_262.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_263.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_264.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_265.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_266.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_267.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_268.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_269.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_270.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_271.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_272.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_273.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_274.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_275.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_276.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_277.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_278.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_279.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_280.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_281.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_282.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_283.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_284.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_285.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_286.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_287.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_288.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_289.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_290.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_291.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_292.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_293.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_294.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_295.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_296.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_297.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_298.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_299.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_300.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_301.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_302.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_303.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_304.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_305.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_306.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_307.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_308.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_309.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_310.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_311.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_312.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_313.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_314.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_315.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_316.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_317.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_318.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_319.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_320.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_321.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_322.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_323.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_324.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_325.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_326.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_327.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_328.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_329.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_330.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_331.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_332.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_333.txt",
+        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_334.txt",
+      ];
+      let currentIndex = 0;
+
+      function loadFile(index) {
+        if (index < 0 || index >= files.length) return;
+        fetch(files[index])
+          .then((response) => response.text())
+          .then((data) => {
+            const formattedData = data
+              .replace(/\n\n/g, "<br><br>")
+              .replace(/\n/g, "<br>");
+            document.getElementById("content").innerHTML = formattedData;
+            currentIndex = index;
+            document.getElementById("pageNumber").innerText =
+              "Page " + (178 + index);
+            document.getElementById("pageNumber2").innerText =
+              "Page " + (178 + index);
+            localStorage.setItem("currentIndex", currentIndex);
+          })
+          .catch((err) => {
+            console.error("Failed to load file:", err);
+          });
+      }
+
+      function nextPage() {
+        if (currentIndex < files.length - 1) {
+          loadFile(currentIndex + 1);
+          window.scrollTo(0, 0);
+        }
+      }
+
+      function prevPage() {
+        if (currentIndex > 0) {
+          loadFile(currentIndex - 1);
+          window.scrollTo(0, 0);
+        }
+      }
+
+      window.onload = () => {
+        const savedIndex = localStorage.getItem("currentIndex");
+        if (savedIndex !== null) {
+          loadFile(parseInt(savedIndex, 10));
+        } else {
+          loadFile(277 - 178); // Default page
+        }
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") {
+            prevPage();
+          } else if (event.key === "ArrowRight") {
+            nextPage();
+          }
+        });
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Novel Viewer</h1>
+    <span id="pageNumber"></span>
+    <div id="content"></div>
+    <div class="navigation">
+      <button onclick="prevPage()">Previous</button
+      ><span id="pageNumber2"></span><button onclick="nextPage()">Next</button>
+    </div>
+  </body>
+</html>

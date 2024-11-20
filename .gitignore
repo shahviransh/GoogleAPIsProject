@@ -1,3 +1,8 @@
+**/Images GIF/
+**/ExtractedTexts/
+cloudAPIKey.json
+cookies.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
