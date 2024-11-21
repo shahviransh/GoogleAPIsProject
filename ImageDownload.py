@@ -9,6 +9,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
+from PIL import Image
+from io import BytesIO
 
 # Load environment variables from a .env file
 load_dotenv()
@@ -29,7 +31,7 @@ def getLengthOfImages(path):
     return count
 
 
-start = 124
+start = 123
 dir_path = "Gao Wu, Swallowed Star CG"
 end = 146
 image_prefix = os.getenv("IMAGE_PREFIX")
@@ -79,16 +81,19 @@ def fetch_image_url(driver, url):
         # Parse with BeautifulSoup
         soup = BeautifulSoup(page_source, "html.parser")
         images = soup.find_all("img")
-        return_image = (None, None)
+        img_txt = [
+            img["src"]
+            for img in images
+            if "src" in img.attrs and image_prefix in img["src"]
+        ]
+        return_image = (img_txt, None)
 
         # Extract the first matching image URL
         for img in images:
-            if "src" in img.attrs and image_prefix in img["src"]:
-                return_image = (img["src"], return_image[1])
-            elif "src" in img.attrs and website in img["src"]:
+            if "src" in img.attrs and website in img["src"]:
                 return_image = (return_image[0], img["src"])
 
-        if return_image[0] is None:
+        if len(return_image[0]) == 0:
             print(f"No matching image found on {url}")
 
         return return_image
@@ -98,17 +103,47 @@ def fetch_image_url(driver, url):
         return None
 
 
-def download_image(image_url, image_name):
-    """Download and save the image from the given URL."""
+def download_and_combine_images(image_urls, output_name):
+    """Download images from URLs and combine them into one image."""
     try:
-        response = requests.get("https:" + image_url, stream=True)
-        response.raise_for_status()
-        with open(image_name, "wb") as file:
-            for chunk in response.iter_content(1024):
-                file.write(chunk)
-        print(f"Image saved: {image_name}")
+        if not image_urls:
+            print("No URLs provided.")
+            return
+
+        # Download images into a list
+        images = []
+        for url in image_urls:
+            response = requests.get("https:" + url, stream=True)
+            response.raise_for_status()
+            img = Image.open(BytesIO(response.content))
+            images.append(img)
+
+        # Check if there's only one image
+        if len(images) == 1:
+            images[0].save(output_name)
+            print(f"Single image saved as {output_name}.")
+            return
+
+        # Combine images vertically
+        widths = [img.width for img in images]
+        heights = [img.height for img in images]
+
+        max_width = max(widths)
+        total_height = sum(heights)
+
+        combined_image = Image.new("RGB", (max_width, total_height))
+
+        # Paste images vertically
+        y_offset = 0
+        for img in images:
+            combined_image.paste(img, (0, y_offset))
+            y_offset += img.height
+
+        combined_image.save(output_name, format="PNG")
+        print(f"Combined image saved as {output_name}.")
+
     except Exception as e:
-        print(f"Error downloading image {image_url}: {e}")
+        print(f"Error: {e}")
 
 
 def get_all_images(start, end):
@@ -140,11 +175,12 @@ def get_all_images(start, end):
             print(f"Image already exists: {image_name}")
             continue
         time.sleep(5)
-        image_url, image_url2 = fetch_image_url(driver, url)
+        image_urls, image_url = fetch_image_url(driver, url)
+
+        if len(image_urls) > 0:
+            download_and_combine_images(image_urls, image_name)
         if image_url is not None:
-            download_image(image_url, image_name)
-        if image_url2 is not None:
-            download_image(image_url2, image_name2)
+            download_and_combine_images([image_url], image_name2)
 
     # Close the driver
     driver.quit()

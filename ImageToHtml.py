@@ -12,7 +12,7 @@ load_dotenv()
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 image_prefix = os.getenv("IMAGE_PREFIX")
 missing_num = 0
-dir_path = "Online Games, FC"
+dir_path = "Gao Wu, Swallowed Star CG"
 
 
 def batch_extract_text_from_images(image_uris):
@@ -140,8 +140,8 @@ def generate_dynamic_html(file_paths, output_dir):
                 f"""
                 let files = {file_paths};
                 let currentIndex = 0;
-                let tempIndex = 346;
-                let defaultIndex = 479;
+                let tempIndex = 121;
+                let defaultIndex = 121;
 
                 function getImagePrefix() {{
                     return window.env.IMAGE_PREFIX;
