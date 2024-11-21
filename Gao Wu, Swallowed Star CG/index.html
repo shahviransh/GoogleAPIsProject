@@ -1,0 +1,125 @@
+<html><head><title>Novel Viewer</title><style>
+                body {
+                    font-family: Roboto, Arial, sans-serif;
+                    margin: 2em auto;
+                    max-width: 800px;
+                    background-color: #fdf6e3;
+                    color: #333;
+                }
+                .navigation {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 2em;
+                }
+                .navigation button {
+                    padding: 0.5em 1em;
+                    background-color: #007BFF;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+                .navigation button:hover {
+                    background-color: #0056b3;
+                }
+                #content {
+                    white-space: pre-wrap;
+                    line-height: 2;
+                }
+            </style><script src='config.js'></script><script>
+                let files = [['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_1.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (0)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_2.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (1)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_3.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (2)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_4.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (3)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_5.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (4)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_6.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (5)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_7.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (6)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_8.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (7)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_9.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (8)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_10.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (9)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_11.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (10)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_12.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (11)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_13.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (12)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_14.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (13)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_15.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (14)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_16.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (15)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_17.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (16)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_18.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (17)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_19.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (18)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_20.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (19)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_21.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (20)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_22.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (21)_1.gif'], ['Gao Wu, Swallowed Star CG\\ExtractedTexts\\Page_23.txt', 'Gao Wu, Swallowed Star CG\\Images GIF\\${getImagePrefix()} (22)_1.gif']];
+                let currentIndex = 0;
+                let tempIndex = 121;
+                let defaultIndex = 121;
+
+                function getImagePrefix() {
+                    return window.env.IMAGE_PREFIX;
+                }
+
+                files.forEach((file) => {
+                    if (file[1]) {
+                        let lastSlashIndex = file[1].lastIndexOf("\\");
+                        let filePath = file[1];
+                        let directoryPath = filePath.substring(0, lastSlashIndex);
+                        let imageName = filePath.substring(lastSlashIndex + 1);
+                        let imageSuffix = imageName.split(" ")[1];
+                        file[1] = directoryPath + "/" + getImagePrefix() + " " + imageSuffix;
+                    }
+                });
+
+                function loadFile(index) {
+                    if (index < 0 || index >= files.length) return;
+
+                    // Clear the existing content
+                    document.getElementById('content').innerHTML = '';
+
+                    if (files[index][1]) {
+                        // Display the image
+                        fetch(files[index][1])
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to fetch image');
+                            }
+                            return response.blob(); // Convert the response to a blob
+                        })
+                        .then(blob => {
+                            const imageURL = URL.createObjectURL(blob);
+                            const imageElement = document.createElement('img');
+                            imageElement.src = imageURL;
+                            imageElement.alt = 'Image';
+                            imageElement.style.maxWidth = '50%';
+                            document.getElementById('content').appendChild(imageElement);
+                        })
+                        .catch(err => {
+                            console.error('Failed to load image:', err);
+                        });
+                    }
+
+                    fetch(files[index][0])
+                        .then(response => response.text())
+                        .then(data => {
+                            const formattedData = data.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+                            const textElement = document.createElement('div');
+                            textElement.innerHTML = formattedData;
+                            document.getElementById('content').appendChild(textElement);
+                            currentIndex = index;
+                            document.getElementById('pageNumber').innerText = 'Page ' + (tempIndex + index);
+                            document.getElementById('pageNumber2').innerText = 'Page ' + (tempIndex + index);
+                            localStorage.setItem('currentIndex', currentIndex);
+                        })
+                        .catch(err => {
+                            console.error('Failed to load file:', err);
+                        });
+                }
+
+                function nextPage() {
+                    if (currentIndex < files.length - 1) {
+                        loadFile(currentIndex + 1);
+                        window.scrollTo(0, 0);
+                    }
+                }
+
+                function prevPage() {
+                    if (currentIndex > 0) {
+                        loadFile(currentIndex - 1);
+                        window.scrollTo(0, 0);
+                    }
+                }
+
+                window.onload = () => {
+                    const savedIndex = localStorage.getItem('currentIndex');
+                    if (savedIndex !== null) {
+                        loadFile(parseInt(savedIndex, 10));
+                    } else {
+                        loadFile(defaultIndex - tempIndex); // Default page
+                    }
+
+                    window.addEventListener("keydown", (event) => {
+                        if (event.key === "ArrowLeft") {
+                            prevPage();
+                        } else if (event.key === "ArrowRight") {
+                            nextPage();
+                        }
+                    });
+                };
+            </script></head><body><h1>Novel Viewer</h1><span id='pageNumber'></span><div id='content'></div><div class='navigation'><button onclick='prevPage()'>Previous</button><span id='pageNumber2'></span><button onclick='nextPage()'>Next</button></div></body></html>

@@ -1,431 +1,125 @@
-<html>
-  <head>
-    <title>Novel Viewer</title>
-    <style>
-      body {
-        font-family: Roboto, Arial, sans-serif;
-        margin: 2em auto;
-        max-width: 800px;
-        background-color: #fdf6e3;
-        color: #333;
-      }
-      .navigation {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 2em;
-      }
-      .navigation button {
-        padding: 0.5em 1em;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      .navigation button:hover {
-        background-color: #0056b3;
-      }
-      #content {
-        white-space: pre-wrap;
-        line-height: 1.6;
-      }
-    </style>
-    <script>
-      let files = [
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_1.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_2.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_3.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_4.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_5.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_6.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_7.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_8.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_9.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_10.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_11.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_12.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_13.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_14.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_15.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_16.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_17.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_18.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_19.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_20.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_21.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_22.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_23.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_24.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_25.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_26.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_27.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_28.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_29.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_30.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_31.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_32.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_33.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_34.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_35.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_36.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_37.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_38.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_39.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_42.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_43.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_44.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_45.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_46.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_47.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_48.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_49.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_50.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_51.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_52.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_53.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_54.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_55.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_56.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_57.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_58.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_59.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_60.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_61.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_62.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_63.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_64.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_65.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_66.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_67.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_68.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_69.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_70.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_71.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_72.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_73.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_74.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_75.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_76.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_77.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_78.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_79.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_80.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_81.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_82.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_83.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_84.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_85.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_86.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_87.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_88.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_89.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_90.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_91.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_92.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_93.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_94.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_96.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_97.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_98.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_99.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_100.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_101.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_102.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_103.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_104.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_105.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_106.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_107.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_108.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_109.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_110.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_111.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_112.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_113.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_114.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_115.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_116.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_117.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_118.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_119.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_120.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_121.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_122.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_123.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_124.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_125.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_126.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_127.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_128.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_129.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_130.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_131.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_132.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_133.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_134.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_135.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_136.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_137.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_138.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_139.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_140.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_141.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_142.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_143.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_144.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_145.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_146.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_147.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_148.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_149.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_150.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_151.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_152.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_153.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_154.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_155.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_156.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_157.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_158.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_159.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_160.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_161.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_162.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_163.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_164.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_165.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_166.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_167.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_168.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_169.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_170.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_171.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_172.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_173.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_174.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_175.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_176.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_177.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_178.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_179.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_180.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_181.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_182.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_183.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_184.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_185.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_186.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_187.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_188.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_189.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_190.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_191.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_192.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_193.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_194.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_195.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_196.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_197.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_198.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_199.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_200.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_201.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_202.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_203.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_204.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_205.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_206.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_207.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_208.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_209.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_210.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_211.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_212.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_213.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_214.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_215.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_216.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_217.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_218.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_219.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_220.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_221.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_222.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_223.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_224.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_225.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_226.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_227.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_228.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_229.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_230.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_231.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_232.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_233.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_234.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_235.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_236.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_237.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_238.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_239.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_240.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_241.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_242.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_243.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_244.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_245.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_246.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_247.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_248.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_249.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_250.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_251.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_252.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_253.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_254.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_255.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_256.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_257.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_258.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_259.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_260.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_261.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_262.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_263.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_264.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_265.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_266.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_267.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_268.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_269.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_270.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_271.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_272.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_273.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_274.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_275.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_276.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_277.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_278.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_279.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_280.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_281.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_282.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_283.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_284.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_285.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_286.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_287.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_288.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_289.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_290.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_291.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_292.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_293.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_294.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_295.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_296.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_297.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_298.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_299.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_300.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_301.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_302.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_303.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_304.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_305.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_306.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_307.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_308.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_309.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_310.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_311.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_312.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_313.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_314.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_315.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_316.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_317.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_318.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_319.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_320.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_321.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_322.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_323.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_324.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_325.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_326.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_327.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_328.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_329.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_330.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_331.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_332.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_333.txt",
-        "Gao Wu, Swallowed Star\\ExtractedTexts\\Page_334.txt",
-      ];
-      let currentIndex = 0;
+<html><head><title>Novel Viewer</title><style>
+                body {
+                    font-family: Roboto, Arial, sans-serif;
+                    margin: 2em auto;
+                    max-width: 800px;
+                    background-color: #fdf6e3;
+                    color: #333;
+                }
+                .navigation {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 2em;
+                }
+                .navigation button {
+                    padding: 0.5em 1em;
+                    background-color: #007BFF;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+                .navigation button:hover {
+                    background-color: #0056b3;
+                }
+                #content {
+                    white-space: pre-wrap;
+                    line-height: 2;
+                }
+            </style><script src='config.js'></script><script>
+                let files = ['Online Games, FC\\ExtractedTexts\\Page_1.txt', 'Online Games, FC\\ExtractedTexts\\Page_2.txt', 'Online Games, FC\\ExtractedTexts\\Page_3.txt', 'Online Games, FC\\ExtractedTexts\\Page_4.txt', 'Online Games, FC\\ExtractedTexts\\Page_5.txt', 'Online Games, FC\\ExtractedTexts\\Page_6.txt', 'Online Games, FC\\ExtractedTexts\\Page_7.txt', 'Online Games, FC\\ExtractedTexts\\Page_8.txt', 'Online Games, FC\\ExtractedTexts\\Page_9.txt', 'Online Games, FC\\ExtractedTexts\\Page_10.txt', 'Online Games, FC\\ExtractedTexts\\Page_11.txt', 'Online Games, FC\\ExtractedTexts\\Page_12.txt', 'Online Games, FC\\ExtractedTexts\\Page_13.txt', 'Online Games, FC\\ExtractedTexts\\Page_14.txt', 'Online Games, FC\\ExtractedTexts\\Page_15.txt', 'Online Games, FC\\ExtractedTexts\\Page_16.txt', 'Online Games, FC\\ExtractedTexts\\Page_17.txt', 'Online Games, FC\\ExtractedTexts\\Page_18.txt', 'Online Games, FC\\ExtractedTexts\\Page_19.txt', 'Online Games, FC\\ExtractedTexts\\Page_20.txt', 'Online Games, FC\\ExtractedTexts\\Page_21.txt', 'Online Games, FC\\ExtractedTexts\\Page_22.txt', 'Online Games, FC\\ExtractedTexts\\Page_23.txt', 'Online Games, FC\\ExtractedTexts\\Page_24.txt', 'Online Games, FC\\ExtractedTexts\\Page_25.txt', 'Online Games, FC\\ExtractedTexts\\Page_26.txt', 'Online Games, FC\\ExtractedTexts\\Page_27.txt', 'Online Games, FC\\ExtractedTexts\\Page_28.txt', 'Online Games, FC\\ExtractedTexts\\Page_29.txt', 'Online Games, FC\\ExtractedTexts\\Page_30.txt', 'Online Games, FC\\ExtractedTexts\\Page_31.txt', 'Online Games, FC\\ExtractedTexts\\Page_32.txt', 'Online Games, FC\\ExtractedTexts\\Page_33.txt', 'Online Games, FC\\ExtractedTexts\\Page_34.txt', 'Online Games, FC\\ExtractedTexts\\Page_35.txt', 'Online Games, FC\\ExtractedTexts\\Page_36.txt', 'Online Games, FC\\ExtractedTexts\\Page_37.txt', 'Online Games, FC\\ExtractedTexts\\Page_38.txt', 'Online Games, FC\\ExtractedTexts\\Page_39.txt', 'Online Games, FC\\ExtractedTexts\\Page_40.txt', 'Online Games, FC\\ExtractedTexts\\Page_41.txt', 'Online Games, FC\\ExtractedTexts\\Page_42.txt', 'Online Games, FC\\ExtractedTexts\\Page_43.txt', 'Online Games, FC\\ExtractedTexts\\Page_44.txt', 'Online Games, FC\\ExtractedTexts\\Page_45.txt', 'Online Games, FC\\ExtractedTexts\\Page_46.txt', 'Online Games, FC\\ExtractedTexts\\Page_47.txt', 'Online Games, FC\\ExtractedTexts\\Page_48.txt', 'Online Games, FC\\ExtractedTexts\\Page_49.txt', 'Online Games, FC\\ExtractedTexts\\Page_50.txt', 'Online Games, FC\\ExtractedTexts\\Page_51.txt', 'Online Games, FC\\ExtractedTexts\\Page_52.txt', 'Online Games, FC\\ExtractedTexts\\Page_53.txt', 'Online Games, FC\\ExtractedTexts\\Page_54.txt', 'Online Games, FC\\ExtractedTexts\\Page_55.txt', 'Online Games, FC\\ExtractedTexts\\Page_56.txt', 'Online Games, FC\\ExtractedTexts\\Page_57.txt', 'Online Games, FC\\ExtractedTexts\\Page_58.txt', 'Online Games, FC\\ExtractedTexts\\Page_59.txt', 'Online Games, FC\\ExtractedTexts\\Page_60.txt', 'Online Games, FC\\ExtractedTexts\\Page_61.txt', 'Online Games, FC\\ExtractedTexts\\Page_62.txt', 'Online Games, FC\\ExtractedTexts\\Page_63.txt', 'Online Games, FC\\ExtractedTexts\\Page_64.txt', 'Online Games, FC\\ExtractedTexts\\Page_65.txt', 'Online Games, FC\\ExtractedTexts\\Page_66.txt', 'Online Games, FC\\ExtractedTexts\\Page_67.txt', 'Online Games, FC\\ExtractedTexts\\Page_68.txt', 'Online Games, FC\\ExtractedTexts\\Page_69.txt', 'Online Games, FC\\ExtractedTexts\\Page_70.txt', 'Online Games, FC\\ExtractedTexts\\Page_71.txt', 'Online Games, FC\\ExtractedTexts\\Page_72.txt', 'Online Games, FC\\ExtractedTexts\\Page_73.txt', 'Online Games, FC\\ExtractedTexts\\Page_74.txt', 'Online Games, FC\\ExtractedTexts\\Page_75.txt', 'Online Games, FC\\ExtractedTexts\\Page_76.txt', 'Online Games, FC\\ExtractedTexts\\Page_77.txt', 'Online Games, FC\\ExtractedTexts\\Page_78.txt', 'Online Games, FC\\ExtractedTexts\\Page_79.txt', 'Online Games, FC\\ExtractedTexts\\Page_80.txt', 'Online Games, FC\\ExtractedTexts\\Page_81.txt', 'Online Games, FC\\ExtractedTexts\\Page_82.txt', 'Online Games, FC\\ExtractedTexts\\Page_83.txt', 'Online Games, FC\\ExtractedTexts\\Page_84.txt', 'Online Games, FC\\ExtractedTexts\\Page_85.txt', 'Online Games, FC\\ExtractedTexts\\Page_86.txt', 'Online Games, FC\\ExtractedTexts\\Page_87.txt', 'Online Games, FC\\ExtractedTexts\\Page_88.txt', 'Online Games, FC\\ExtractedTexts\\Page_89.txt', 'Online Games, FC\\ExtractedTexts\\Page_90.txt', 'Online Games, FC\\ExtractedTexts\\Page_91.txt', 'Online Games, FC\\ExtractedTexts\\Page_92.txt', 'Online Games, FC\\ExtractedTexts\\Page_93.txt', 'Online Games, FC\\ExtractedTexts\\Page_94.txt', 'Online Games, FC\\ExtractedTexts\\Page_95.txt', 'Online Games, FC\\ExtractedTexts\\Page_96.txt', 'Online Games, FC\\ExtractedTexts\\Page_97.txt', 'Online Games, FC\\ExtractedTexts\\Page_98.txt', 'Online Games, FC\\ExtractedTexts\\Page_99.txt', 'Online Games, FC\\ExtractedTexts\\Page_100.txt', 'Online Games, FC\\ExtractedTexts\\Page_101.txt', 'Online Games, FC\\ExtractedTexts\\Page_102.txt', 'Online Games, FC\\ExtractedTexts\\Page_103.txt', 'Online Games, FC\\ExtractedTexts\\Page_104.txt', 'Online Games, FC\\ExtractedTexts\\Page_105.txt', 'Online Games, FC\\ExtractedTexts\\Page_106.txt', 'Online Games, FC\\ExtractedTexts\\Page_107.txt', 'Online Games, FC\\ExtractedTexts\\Page_108.txt', 'Online Games, FC\\ExtractedTexts\\Page_109.txt', 'Online Games, FC\\ExtractedTexts\\Page_110.txt', 'Online Games, FC\\ExtractedTexts\\Page_111.txt', 'Online Games, FC\\ExtractedTexts\\Page_112.txt', 'Online Games, FC\\ExtractedTexts\\Page_113.txt', 'Online Games, FC\\ExtractedTexts\\Page_114.txt', 'Online Games, FC\\ExtractedTexts\\Page_115.txt', 'Online Games, FC\\ExtractedTexts\\Page_116.txt', 'Online Games, FC\\ExtractedTexts\\Page_117.txt', 'Online Games, FC\\ExtractedTexts\\Page_118.txt', 'Online Games, FC\\ExtractedTexts\\Page_119.txt', 'Online Games, FC\\ExtractedTexts\\Page_120.txt', 'Online Games, FC\\ExtractedTexts\\Page_121.txt', 'Online Games, FC\\ExtractedTexts\\Page_122.txt', 'Online Games, FC\\ExtractedTexts\\Page_123.txt', 'Online Games, FC\\ExtractedTexts\\Page_124.txt', 'Online Games, FC\\ExtractedTexts\\Page_125.txt', 'Online Games, FC\\ExtractedTexts\\Page_126.txt', 'Online Games, FC\\ExtractedTexts\\Page_127.txt', 'Online Games, FC\\ExtractedTexts\\Page_128.txt', 'Online Games, FC\\ExtractedTexts\\Page_129.txt', 'Online Games, FC\\ExtractedTexts\\Page_130.txt', 'Online Games, FC\\ExtractedTexts\\Page_131.txt', 'Online Games, FC\\ExtractedTexts\\Page_132.txt', 'Online Games, FC\\ExtractedTexts\\Page_133.txt', 'Online Games, FC\\ExtractedTexts\\Page_134.txt', 'Online Games, FC\\ExtractedTexts\\Page_135.txt', 'Online Games, FC\\ExtractedTexts\\Page_136.txt', 'Online Games, FC\\ExtractedTexts\\Page_137.txt', 'Online Games, FC\\ExtractedTexts\\Page_138.txt', 'Online Games, FC\\ExtractedTexts\\Page_139.txt', 'Online Games, FC\\ExtractedTexts\\Page_140.txt', 'Online Games, FC\\ExtractedTexts\\Page_141.txt', 'Online Games, FC\\ExtractedTexts\\Page_142.txt', 'Online Games, FC\\ExtractedTexts\\Page_143.txt', 'Online Games, FC\\ExtractedTexts\\Page_144.txt', 'Online Games, FC\\ExtractedTexts\\Page_145.txt', 'Online Games, FC\\ExtractedTexts\\Page_146.txt', 'Online Games, FC\\ExtractedTexts\\Page_147.txt', 'Online Games, FC\\ExtractedTexts\\Page_148.txt', 'Online Games, FC\\ExtractedTexts\\Page_149.txt', 'Online Games, FC\\ExtractedTexts\\Page_150.txt', 'Online Games, FC\\ExtractedTexts\\Page_151.txt', 'Online Games, FC\\ExtractedTexts\\Page_152.txt', 'Online Games, FC\\ExtractedTexts\\Page_153.txt', 'Online Games, FC\\ExtractedTexts\\Page_154.txt', 'Online Games, FC\\ExtractedTexts\\Page_155.txt', 'Online Games, FC\\ExtractedTexts\\Page_156.txt', 'Online Games, FC\\ExtractedTexts\\Page_157.txt', 'Online Games, FC\\ExtractedTexts\\Page_158.txt', 'Online Games, FC\\ExtractedTexts\\Page_159.txt', 'Online Games, FC\\ExtractedTexts\\Page_160.txt', 'Online Games, FC\\ExtractedTexts\\Page_161.txt', 'Online Games, FC\\ExtractedTexts\\Page_162.txt', 'Online Games, FC\\ExtractedTexts\\Page_163.txt', 'Online Games, FC\\ExtractedTexts\\Page_164.txt', 'Online Games, FC\\ExtractedTexts\\Page_165.txt', 'Online Games, FC\\ExtractedTexts\\Page_166.txt', 'Online Games, FC\\ExtractedTexts\\Page_167.txt', 'Online Games, FC\\ExtractedTexts\\Page_168.txt', 'Online Games, FC\\ExtractedTexts\\Page_169.txt', 'Online Games, FC\\ExtractedTexts\\Page_170.txt', 'Online Games, FC\\ExtractedTexts\\Page_171.txt', 'Online Games, FC\\ExtractedTexts\\Page_172.txt', 'Online Games, FC\\ExtractedTexts\\Page_173.txt', 'Online Games, FC\\ExtractedTexts\\Page_174.txt', 'Online Games, FC\\ExtractedTexts\\Page_175.txt', 'Online Games, FC\\ExtractedTexts\\Page_176.txt', 'Online Games, FC\\ExtractedTexts\\Page_177.txt', 'Online Games, FC\\ExtractedTexts\\Page_178.txt', 'Online Games, FC\\ExtractedTexts\\Page_179.txt', 'Online Games, FC\\ExtractedTexts\\Page_180.txt', 'Online Games, FC\\ExtractedTexts\\Page_181.txt', 'Online Games, FC\\ExtractedTexts\\Page_182.txt', 'Online Games, FC\\ExtractedTexts\\Page_183.txt', 'Online Games, FC\\ExtractedTexts\\Page_184.txt', 'Online Games, FC\\ExtractedTexts\\Page_185.txt', 'Online Games, FC\\ExtractedTexts\\Page_186.txt', 'Online Games, FC\\ExtractedTexts\\Page_187.txt', 'Online Games, FC\\ExtractedTexts\\Page_188.txt', 'Online Games, FC\\ExtractedTexts\\Page_189.txt', 'Online Games, FC\\ExtractedTexts\\Page_190.txt', 'Online Games, FC\\ExtractedTexts\\Page_191.txt', 'Online Games, FC\\ExtractedTexts\\Page_192.txt', 'Online Games, FC\\ExtractedTexts\\Page_193.txt', 'Online Games, FC\\ExtractedTexts\\Page_194.txt', 'Online Games, FC\\ExtractedTexts\\Page_195.txt', 'Online Games, FC\\ExtractedTexts\\Page_196.txt', 'Online Games, FC\\ExtractedTexts\\Page_197.txt', 'Online Games, FC\\ExtractedTexts\\Page_198.txt', 'Online Games, FC\\ExtractedTexts\\Page_199.txt', 'Online Games, FC\\ExtractedTexts\\Page_200.txt', 'Online Games, FC\\ExtractedTexts\\Page_201.txt', 'Online Games, FC\\ExtractedTexts\\Page_202.txt', 'Online Games, FC\\ExtractedTexts\\Page_203.txt', 'Online Games, FC\\ExtractedTexts\\Page_204.txt', 'Online Games, FC\\ExtractedTexts\\Page_205.txt', 'Online Games, FC\\ExtractedTexts\\Page_206.txt', 'Online Games, FC\\ExtractedTexts\\Page_207.txt', 'Online Games, FC\\ExtractedTexts\\Page_208.txt', 'Online Games, FC\\ExtractedTexts\\Page_209.txt', 'Online Games, FC\\ExtractedTexts\\Page_210.txt', 'Online Games, FC\\ExtractedTexts\\Page_211.txt', 'Online Games, FC\\ExtractedTexts\\Page_212.txt', 'Online Games, FC\\ExtractedTexts\\Page_213.txt', 'Online Games, FC\\ExtractedTexts\\Page_214.txt', 'Online Games, FC\\ExtractedTexts\\Page_215.txt', 'Online Games, FC\\ExtractedTexts\\Page_216.txt', 'Online Games, FC\\ExtractedTexts\\Page_217.txt', 'Online Games, FC\\ExtractedTexts\\Page_218.txt', 'Online Games, FC\\ExtractedTexts\\Page_219.txt', 'Online Games, FC\\ExtractedTexts\\Page_220.txt', 'Online Games, FC\\ExtractedTexts\\Page_221.txt', 'Online Games, FC\\ExtractedTexts\\Page_222.txt', 'Online Games, FC\\ExtractedTexts\\Page_223.txt', 'Online Games, FC\\ExtractedTexts\\Page_224.txt', 'Online Games, FC\\ExtractedTexts\\Page_225.txt', 'Online Games, FC\\ExtractedTexts\\Page_226.txt', 'Online Games, FC\\ExtractedTexts\\Page_227.txt', 'Online Games, FC\\ExtractedTexts\\Page_228.txt', 'Online Games, FC\\ExtractedTexts\\Page_229.txt', 'Online Games, FC\\ExtractedTexts\\Page_230.txt', 'Online Games, FC\\ExtractedTexts\\Page_231.txt', 'Online Games, FC\\ExtractedTexts\\Page_232.txt', 'Online Games, FC\\ExtractedTexts\\Page_233.txt', 'Online Games, FC\\ExtractedTexts\\Page_234.txt', 'Online Games, FC\\ExtractedTexts\\Page_235.txt', 'Online Games, FC\\ExtractedTexts\\Page_236.txt', 'Online Games, FC\\ExtractedTexts\\Page_237.txt', 'Online Games, FC\\ExtractedTexts\\Page_238.txt', 'Online Games, FC\\ExtractedTexts\\Page_239.txt', 'Online Games, FC\\ExtractedTexts\\Page_240.txt', 'Online Games, FC\\ExtractedTexts\\Page_241.txt', 'Online Games, FC\\ExtractedTexts\\Page_242.txt', 'Online Games, FC\\ExtractedTexts\\Page_243.txt', 'Online Games, FC\\ExtractedTexts\\Page_244.txt', 'Online Games, FC\\ExtractedTexts\\Page_245.txt', 'Online Games, FC\\ExtractedTexts\\Page_246.txt', 'Online Games, FC\\ExtractedTexts\\Page_247.txt', 'Online Games, FC\\ExtractedTexts\\Page_248.txt', 'Online Games, FC\\ExtractedTexts\\Page_249.txt', 'Online Games, FC\\ExtractedTexts\\Page_250.txt', 'Online Games, FC\\ExtractedTexts\\Page_251.txt', 'Online Games, FC\\ExtractedTexts\\Page_252.txt', 'Online Games, FC\\ExtractedTexts\\Page_253.txt', 'Online Games, FC\\ExtractedTexts\\Page_254.txt', 'Online Games, FC\\ExtractedTexts\\Page_255.txt', 'Online Games, FC\\ExtractedTexts\\Page_256.txt', 'Online Games, FC\\ExtractedTexts\\Page_257.txt', 'Online Games, FC\\ExtractedTexts\\Page_258.txt', 'Online Games, FC\\ExtractedTexts\\Page_259.txt', 'Online Games, FC\\ExtractedTexts\\Page_260.txt', 'Online Games, FC\\ExtractedTexts\\Page_261.txt', 'Online Games, FC\\ExtractedTexts\\Page_262.txt', 'Online Games, FC\\ExtractedTexts\\Page_263.txt', 'Online Games, FC\\ExtractedTexts\\Page_264.txt', 'Online Games, FC\\ExtractedTexts\\Page_265.txt', 'Online Games, FC\\ExtractedTexts\\Page_266.txt', 'Online Games, FC\\ExtractedTexts\\Page_267.txt', 'Online Games, FC\\ExtractedTexts\\Page_268.txt', 'Online Games, FC\\ExtractedTexts\\Page_269.txt', 'Online Games, FC\\ExtractedTexts\\Page_270.txt', 'Online Games, FC\\ExtractedTexts\\Page_271.txt', 'Online Games, FC\\ExtractedTexts\\Page_272.txt', 'Online Games, FC\\ExtractedTexts\\Page_273.txt', 'Online Games, FC\\ExtractedTexts\\Page_274.txt', 'Online Games, FC\\ExtractedTexts\\Page_275.txt', 'Online Games, FC\\ExtractedTexts\\Page_276.txt', 'Online Games, FC\\ExtractedTexts\\Page_277.txt', 'Online Games, FC\\ExtractedTexts\\Page_278.txt', 'Online Games, FC\\ExtractedTexts\\Page_279.txt', 'Online Games, FC\\ExtractedTexts\\Page_280.txt', 'Online Games, FC\\ExtractedTexts\\Page_281.txt', 'Online Games, FC\\ExtractedTexts\\Page_282.txt', 'Online Games, FC\\ExtractedTexts\\Page_283.txt', 'Online Games, FC\\ExtractedTexts\\Page_284.txt', 'Online Games, FC\\ExtractedTexts\\Page_285.txt', 'Online Games, FC\\ExtractedTexts\\Page_286.txt', 'Online Games, FC\\ExtractedTexts\\Page_287.txt', 'Online Games, FC\\ExtractedTexts\\Page_288.txt', 'Online Games, FC\\ExtractedTexts\\Page_289.txt', 'Online Games, FC\\ExtractedTexts\\Page_290.txt', 'Online Games, FC\\ExtractedTexts\\Page_291.txt', 'Online Games, FC\\ExtractedTexts\\Page_292.txt', 'Online Games, FC\\ExtractedTexts\\Page_293.txt', 'Online Games, FC\\ExtractedTexts\\Page_294.txt', 'Online Games, FC\\ExtractedTexts\\Page_295.txt', 'Online Games, FC\\ExtractedTexts\\Page_296.txt', 'Online Games, FC\\ExtractedTexts\\Page_297.txt', 'Online Games, FC\\ExtractedTexts\\Page_298.txt', 'Online Games, FC\\ExtractedTexts\\Page_299.txt', 'Online Games, FC\\ExtractedTexts\\Page_300.txt', 'Online Games, FC\\ExtractedTexts\\Page_301.txt', 'Online Games, FC\\ExtractedTexts\\Page_302.txt', 'Online Games, FC\\ExtractedTexts\\Page_303.txt', 'Online Games, FC\\ExtractedTexts\\Page_304.txt', 'Online Games, FC\\ExtractedTexts\\Page_305.txt', 'Online Games, FC\\ExtractedTexts\\Page_306.txt', 'Online Games, FC\\ExtractedTexts\\Page_307.txt', 'Online Games, FC\\ExtractedTexts\\Page_308.txt', 'Online Games, FC\\ExtractedTexts\\Page_309.txt', 'Online Games, FC\\ExtractedTexts\\Page_310.txt', 'Online Games, FC\\ExtractedTexts\\Page_311.txt', 'Online Games, FC\\ExtractedTexts\\Page_312.txt', 'Online Games, FC\\ExtractedTexts\\Page_313.txt', 'Online Games, FC\\ExtractedTexts\\Page_314.txt', 'Online Games, FC\\ExtractedTexts\\Page_315.txt', 'Online Games, FC\\ExtractedTexts\\Page_316.txt', 'Online Games, FC\\ExtractedTexts\\Page_317.txt', 'Online Games, FC\\ExtractedTexts\\Page_318.txt', 'Online Games, FC\\ExtractedTexts\\Page_319.txt', 'Online Games, FC\\ExtractedTexts\\Page_320.txt', 'Online Games, FC\\ExtractedTexts\\Page_321.txt', 'Online Games, FC\\ExtractedTexts\\Page_322.txt', 'Online Games, FC\\ExtractedTexts\\Page_323.txt', 'Online Games, FC\\ExtractedTexts\\Page_324.txt', 'Online Games, FC\\ExtractedTexts\\Page_325.txt', 'Online Games, FC\\ExtractedTexts\\Page_326.txt', 'Online Games, FC\\ExtractedTexts\\Page_327.txt', 'Online Games, FC\\ExtractedTexts\\Page_328.txt', 'Online Games, FC\\ExtractedTexts\\Page_329.txt', 'Online Games, FC\\ExtractedTexts\\Page_330.txt', 'Online Games, FC\\ExtractedTexts\\Page_331.txt', 'Online Games, FC\\ExtractedTexts\\Page_332.txt', 'Online Games, FC\\ExtractedTexts\\Page_333.txt', 'Online Games, FC\\ExtractedTexts\\Page_334.txt', 'Online Games, FC\\ExtractedTexts\\Page_335.txt', 'Online Games, FC\\ExtractedTexts\\Page_336.txt', 'Online Games, FC\\ExtractedTexts\\Page_337.txt', 'Online Games, FC\\ExtractedTexts\\Page_338.txt', 'Online Games, FC\\ExtractedTexts\\Page_339.txt', 'Online Games, FC\\ExtractedTexts\\Page_340.txt', 'Online Games, FC\\ExtractedTexts\\Page_341.txt', 'Online Games, FC\\ExtractedTexts\\Page_342.txt', 'Online Games, FC\\ExtractedTexts\\Page_343.txt', 'Online Games, FC\\ExtractedTexts\\Page_344.txt', 'Online Games, FC\\ExtractedTexts\\Page_345.txt', 'Online Games, FC\\ExtractedTexts\\Page_346.txt', 'Online Games, FC\\ExtractedTexts\\Page_347.txt', 'Online Games, FC\\ExtractedTexts\\Page_348.txt', 'Online Games, FC\\ExtractedTexts\\Page_349.txt', 'Online Games, FC\\ExtractedTexts\\Page_350.txt', 'Online Games, FC\\ExtractedTexts\\Page_351.txt', 'Online Games, FC\\ExtractedTexts\\Page_352.txt', 'Online Games, FC\\ExtractedTexts\\Page_353.txt', 'Online Games, FC\\ExtractedTexts\\Page_354.txt', 'Online Games, FC\\ExtractedTexts\\Page_355.txt', 'Online Games, FC\\ExtractedTexts\\Page_356.txt', 'Online Games, FC\\ExtractedTexts\\Page_357.txt', 'Online Games, FC\\ExtractedTexts\\Page_358.txt', 'Online Games, FC\\ExtractedTexts\\Page_359.txt', 'Online Games, FC\\ExtractedTexts\\Page_360.txt', 'Online Games, FC\\ExtractedTexts\\Page_361.txt', 'Online Games, FC\\ExtractedTexts\\Page_362.txt', 'Online Games, FC\\ExtractedTexts\\Page_363.txt', 'Online Games, FC\\ExtractedTexts\\Page_364.txt', 'Online Games, FC\\ExtractedTexts\\Page_365.txt', 'Online Games, FC\\ExtractedTexts\\Page_366.txt', 'Online Games, FC\\ExtractedTexts\\Page_367.txt', 'Online Games, FC\\ExtractedTexts\\Page_368.txt', 'Online Games, FC\\ExtractedTexts\\Page_369.txt', 'Online Games, FC\\ExtractedTexts\\Page_370.txt', 'Online Games, FC\\ExtractedTexts\\Page_371.txt', 'Online Games, FC\\ExtractedTexts\\Page_372.txt', 'Online Games, FC\\ExtractedTexts\\Page_373.txt', 'Online Games, FC\\ExtractedTexts\\Page_374.txt', 'Online Games, FC\\ExtractedTexts\\Page_375.txt', 'Online Games, FC\\ExtractedTexts\\Page_376.txt', 'Online Games, FC\\ExtractedTexts\\Page_377.txt', 'Online Games, FC\\ExtractedTexts\\Page_378.txt', 'Online Games, FC\\ExtractedTexts\\Page_379.txt', 'Online Games, FC\\ExtractedTexts\\Page_380.txt', 'Online Games, FC\\ExtractedTexts\\Page_381.txt', 'Online Games, FC\\ExtractedTexts\\Page_382.txt', 'Online Games, FC\\ExtractedTexts\\Page_383.txt', 'Online Games, FC\\ExtractedTexts\\Page_384.txt', 'Online Games, FC\\ExtractedTexts\\Page_385.txt', 'Online Games, FC\\ExtractedTexts\\Page_386.txt', 'Online Games, FC\\ExtractedTexts\\Page_387.txt', 'Online Games, FC\\ExtractedTexts\\Page_388.txt', 'Online Games, FC\\ExtractedTexts\\Page_389.txt', 'Online Games, FC\\ExtractedTexts\\Page_390.txt', 'Online Games, FC\\ExtractedTexts\\Page_391.txt', 'Online Games, FC\\ExtractedTexts\\Page_392.txt', 'Online Games, FC\\ExtractedTexts\\Page_393.txt', 'Online Games, FC\\ExtractedTexts\\Page_394.txt', 'Online Games, FC\\ExtractedTexts\\Page_395.txt', 'Online Games, FC\\ExtractedTexts\\Page_396.txt', 'Online Games, FC\\ExtractedTexts\\Page_397.txt', 'Online Games, FC\\ExtractedTexts\\Page_398.txt', 'Online Games, FC\\ExtractedTexts\\Page_399.txt', 'Online Games, FC\\ExtractedTexts\\Page_400.txt', 'Online Games, FC\\ExtractedTexts\\Page_401.txt', 'Online Games, FC\\ExtractedTexts\\Page_402.txt', 'Online Games, FC\\ExtractedTexts\\Page_403.txt', 'Online Games, FC\\ExtractedTexts\\Page_404.txt', 'Online Games, FC\\ExtractedTexts\\Page_405.txt', 'Online Games, FC\\ExtractedTexts\\Page_406.txt', 'Online Games, FC\\ExtractedTexts\\Page_407.txt', 'Online Games, FC\\ExtractedTexts\\Page_408.txt', 'Online Games, FC\\ExtractedTexts\\Page_409.txt', 'Online Games, FC\\ExtractedTexts\\Page_410.txt', 'Online Games, FC\\ExtractedTexts\\Page_411.txt', 'Online Games, FC\\ExtractedTexts\\Page_412.txt'];
+                let currentIndex = 0;
+                let tempIndex = 346;
+                let defaultIndex = 479;
 
-      function loadFile(index) {
-        if (index < 0 || index >= files.length) return;
-        fetch(files[index])
-          .then((response) => response.text())
-          .then((data) => {
-            const formattedData = data
-              .replace(/\n\n/g, "<br><br>")
-              .replace(/\n/g, "<br>");
-            document.getElementById("content").innerHTML = formattedData;
-            currentIndex = index;
-            document.getElementById("pageNumber").innerText =
-              "Page " + (178 + index);
-            document.getElementById("pageNumber2").innerText =
-              "Page " + (178 + index);
-            localStorage.setItem("currentIndex", currentIndex);
-          })
-          .catch((err) => {
-            console.error("Failed to load file:", err);
-          });
-      }
+                function getImagePrefix() {
+                    return window.env.IMAGE_PREFIX;
+                }
 
-      function nextPage() {
-        if (currentIndex < files.length - 1) {
-          loadFile(currentIndex + 1);
-          window.scrollTo(0, 0);
-        }
-      }
+                files.forEach((file) => {
+                    if (Array.isArray(file) && file[1]) {
+                        let lastSlashIndex = file[1].lastIndexOf("\\");
+                        let filePath = file[1];
+                        let directoryPath = filePath.substring(0, lastSlashIndex);
+                        let imageName = filePath.substring(lastSlashIndex + 1);
+                        let imageSuffix = imageName.split(" ")[1];
+                        file[1] = directoryPath + "/" + getImagePrefix() + " " + imageSuffix;
+                    }
+                });
 
-      function prevPage() {
-        if (currentIndex > 0) {
-          loadFile(currentIndex - 1);
-          window.scrollTo(0, 0);
-        }
-      }
+                function loadFile(index) {
+                    if (index < 0 || index >= files.length) return;
 
-      window.onload = () => {
-        const savedIndex = localStorage.getItem("currentIndex");
-        if (savedIndex !== null) {
-          loadFile(parseInt(savedIndex, 10));
-        } else {
-          loadFile(438 - 178); // Default page
-        }
+                    // Clear the existing content
+                    document.getElementById('content').innerHTML = '';
 
-        window.addEventListener("keydown", (event) => {
-          if (event.key === "ArrowLeft") {
-            prevPage();
-          } else if (event.key === "ArrowRight") {
-            nextPage();
-          }
-        });
-      };
-    </script>
-  </head>
-  <body>
-    <h1>Novel Viewer</h1>
-    <span id="pageNumber"></span>
-    <div id="content"></div>
-    <div class="navigation">
-      <button onclick="prevPage()">Previous</button
-      ><span id="pageNumber2"></span><button onclick="nextPage()">Next</button>
-    </div>
-  </body>
-</html>
+                    if (Array.isArray(files[index]) && files[index]?.[1]) {
+                        // Display the image
+                        fetch(files[index][1])
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to fetch image');
+                            }
+                            return response.blob(); // Convert the response to a blob
+                        })
+                        .then(blob => {
+                            const imageURL = URL.createObjectURL(blob);
+                            const imageElement = document.createElement('img');
+                            imageElement.src = imageURL;
+                            imageElement.alt = 'Image';
+                            imageElement.style.maxWidth = '50%';
+                            document.getElementById('content').appendChild(imageElement);
+                        })
+                        .catch(err => {
+                            console.error('Failed to load image:', err);
+                        });
+                    }
+
+                    fetch(Array.isArray(files[index]) ? files[index][0] : files[index])
+                        .then(response => response.text())
+                        .then(data => {
+                            const formattedData = data.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+                            const textElement = document.createElement('div');
+                            textElement.innerHTML = formattedData;
+                            document.getElementById('content').appendChild(textElement);
+                            currentIndex = index;
+                            document.getElementById('pageNumber').innerText = 'Page ' + (tempIndex + index);
+                            document.getElementById('pageNumber2').innerText = 'Page ' + (tempIndex + index);
+                            localStorage.setItem('currentIndex', currentIndex);
+                        })
+                        .catch(err => {
+                            console.error('Failed to load file:', err);
+                        });
+                }
+
+                function nextPage() {
+                    if (currentIndex < files.length - 1) {
+                        loadFile(currentIndex + 1);
+                        window.scrollTo(0, 0);
+                    }
+                }
+
+                function prevPage() {
+                    if (currentIndex > 0) {
+                        loadFile(currentIndex - 1);
+                        window.scrollTo(0, 0);
+                    }
+                }
+
+                window.onload = () => {
+                    const savedIndex = localStorage.getItem('currentIndex');
+                    if (savedIndex !== null) {
+                        loadFile(parseInt(savedIndex, 10));
+                    } else {
+                        loadFile(defaultIndex - tempIndex); // Default page
+                    }
+
+                    window.addEventListener("keydown", (event) => {
+                        if (event.key === "ArrowLeft") {
+                            prevPage();
+                        } else if (event.key === "ArrowRight") {
+                            nextPage();
+                        }
+                    });
+                };
+            </script></head><body><h1>Novel Viewer</h1><span id='pageNumber'></span><div id='content'></div><div class='navigation'><button onclick='prevPage()'>Previous</button><span id='pageNumber2'></span><button onclick='nextPage()'>Next</button></div></body></html>

@@ -38,8 +38,8 @@
                             const formattedData = data.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
                             document.getElementById('content').innerHTML = formattedData;
                             currentIndex = index;
-                            document.getElementById('pageNumber').innerText = 'Page ' + (346 + index);
-                            document.getElementById('pageNumber2').innerText = 'Page ' + (346 + index);
+                            document.getElementById('pageNumber').innerText = 'Page ' + (178 + index);
+                            document.getElementById('pageNumber2').innerText = 'Page ' + (178 + index);
                             localStorage.setItem('currentIndex', currentIndex);
                         })
                         .catch(err => {
@@ -66,7 +66,7 @@
                     if (savedIndex !== null) {
                         loadFile(parseInt(savedIndex, 10));
                     } else {
-                        loadFile(479 - 346); // Default page
+                        loadFile(511 - 178); // Default page
                     }
 
                     window.addEventListener("keydown", (event) => {

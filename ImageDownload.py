@@ -18,6 +18,8 @@ cookies_file = os.getenv("COOKIES_FILE")
 
 # URL of the webpage
 content_url = os.getenv("CONTENT_URL")
+website = os.getenv("WEBSITE_IMG")
+
 
 def getLengthOfImages(path):
     count = 0
@@ -26,9 +28,10 @@ def getLengthOfImages(path):
         count += len(files)
     return count
 
-start = 178
-dir_path = 'Gao Wu, Swallowed Star'
-end = 514
+
+start = 124
+dir_path = "Gao Wu, Swallowed Star CG"
+end = 146
 image_prefix = os.getenv("IMAGE_PREFIX")
 
 
@@ -76,14 +79,19 @@ def fetch_image_url(driver, url):
         # Parse with BeautifulSoup
         soup = BeautifulSoup(page_source, "html.parser")
         images = soup.find_all("img")
+        return_image = (None, None)
 
         # Extract the first matching image URL
         for img in images:
             if "src" in img.attrs and image_prefix in img["src"]:
-                return img["src"]
+                return_image = (img["src"], return_image[1])
+            elif "src" in img.attrs and website in img["src"]:
+                return_image = (return_image[0], img["src"])
 
-        print(f"No matching image found on {url}")
-        return None
+        if return_image[0] is None:
+            print(f"No matching image found on {url}")
+
+        return return_image
 
     except Exception as e:
         print(f"An error occurred while fetching image from {url}: {e}")
@@ -123,17 +131,20 @@ def get_all_images(start, end):
     for i in range(start, end + 1):
         url = content_url.format(i)
         print(f"Fetching image from: {url}")
-        image_name = os.path.join({dir_path},'Images GIF',f'{image_prefix} ({i - start}).gif')
+        image_dir = os.path.join(dir_path, "Images GIF")
+        os.makedirs(image_dir, exist_ok=True)
+        image_name = os.path.join(image_dir, f"{image_prefix} ({i - start}).gif")
+        image_name2 = os.path.join(image_dir, f"{image_prefix} ({i - start})_1.gif")
 
         if os.path.exists(image_name):
-                print(f"Image already exists: {image_name}")
-                continue
+            print(f"Image already exists: {image_name}")
+            continue
         time.sleep(5)
-        image_url = fetch_image_url(driver, url)
-        if image_url:
-            
-
+        image_url, image_url2 = fetch_image_url(driver, url)
+        if image_url is not None:
             download_image(image_url, image_name)
+        if image_url2 is not None:
+            download_image(image_url2, image_name2)
 
     # Close the driver
     driver.quit()

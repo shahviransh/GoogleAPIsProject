@@ -11,7 +11,7 @@ load_dotenv()
 
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 image_prefix = os.getenv("IMAGE_PREFIX")
-missing_num = 3
+missing_num = 0
 dir_path = "Online Games, FC"
 
 
@@ -24,7 +24,7 @@ def batch_extract_text_from_images(image_uris):
     requests = [
         vision.AnnotateImageRequest(
             image=vision.Image(source=vision.ImageSource(image_uri=uri)),
-            features=[vision.Feature(type_=vision.Feature.Type.TEXT_DETECTION)]
+            features=[vision.Feature(type_=vision.Feature.Type.TEXT_DETECTION)],
         )
         for uri in image_uris
     ]
@@ -46,6 +46,8 @@ def upload_to_gcs(bucket_name, image_paths):
 
     client = storage.Client()
     bucket = client.bucket(bucket_name)
+    if not bucket.exists():
+        bucket = client.create_bucket(bucket_name)
     link_gs = []
 
     for image in image_paths:
@@ -72,7 +74,12 @@ def translate_text(text, target_language="en"):
             target_language_code=target_language,
             parent=parent,
         )
-        return "\n".join([translation.translated_text for translation in translated_lines.translations])
+        return "\n".join(
+            [
+                translation.translated_text
+                for translation in translated_lines.translations
+            ]
+        )
     except Exception as e:
         print(f"Error translating text: {e}")
         return None
@@ -127,22 +134,68 @@ def generate_dynamic_html(file_paths, output_dir):
             """
             )
             html_file.write("</style>")
+            html_file.write("<script src='config.js'></script>")
             html_file.write("<script>")
             html_file.write(
                 f"""
                 let files = {file_paths};
                 let currentIndex = 0;
+                let tempIndex = 346;
+                let defaultIndex = 479;
+
+                function getImagePrefix() {{
+                    return window.env.IMAGE_PREFIX;
+                }}
+
+                files.forEach((file) => {{
+                    if (Array.isArray(file) && file[1]) {{
+                        let lastSlashIndex = file[1].lastIndexOf("\\\\");
+                        let filePath = file[1];
+                        let directoryPath = filePath.substring(0, lastSlashIndex);
+                        let imageName = filePath.substring(lastSlashIndex + 1);
+                        let imageSuffix = imageName.split(" ")[1];
+                        file[1] = directoryPath + "/" + getImagePrefix() + " " + imageSuffix;
+                    }}
+                }});
 
                 function loadFile(index) {{
                     if (index < 0 || index >= files.length) return;
-                    fetch(files[index])
+
+                    // Clear the existing content
+                    document.getElementById('content').innerHTML = '';
+
+                    if (Array.isArray(files[index]) && files[index]?.[1]) {{
+                        // Display the image
+                        fetch(files[index][1])
+                        .then(response => {{
+                            if (!response.ok) {{
+                                throw new Error('Failed to fetch image');
+                            }}
+                            return response.blob(); // Convert the response to a blob
+                        }})
+                        .then(blob => {{
+                            const imageURL = URL.createObjectURL(blob);
+                            const imageElement = document.createElement('img');
+                            imageElement.src = imageURL;
+                            imageElement.alt = 'Image';
+                            imageElement.style.maxWidth = '50%';
+                            document.getElementById('content').appendChild(imageElement);
+                        }})
+                        .catch(err => {{
+                            console.error('Failed to load image:', err);
+                        }});
+                    }}
+
+                    fetch(Array.isArray(files[index]) ? files[index][0] : files[index])
                         .then(response => response.text())
                         .then(data => {{
                             const formattedData = data.replace(/\\n\\n/g, '<br><br>').replace(/\\n/g, '<br>');
-                            document.getElementById('content').innerHTML = formattedData;
+                            const textElement = document.createElement('div');
+                            textElement.innerHTML = formattedData;
+                            document.getElementById('content').appendChild(textElement);
                             currentIndex = index;
-                            document.getElementById('pageNumber').innerText = 'Page ' + (346 + index);
-                            document.getElementById('pageNumber2').innerText = 'Page ' + (346 + index);
+                            document.getElementById('pageNumber').innerText = 'Page ' + (tempIndex + index);
+                            document.getElementById('pageNumber2').innerText = 'Page ' + (tempIndex + index);
                             localStorage.setItem('currentIndex', currentIndex);
                         }})
                         .catch(err => {{
@@ -169,7 +222,7 @@ def generate_dynamic_html(file_paths, output_dir):
                     if (savedIndex !== null) {{
                         loadFile(parseInt(savedIndex, 10));
                     }} else {{
-                        loadFile(479 - 346); // Default page
+                        loadFile(defaultIndex - tempIndex); // Default page
                     }}
 
                     window.addEventListener("keydown", (event) => {{
@@ -228,34 +281,35 @@ def process_images_to_texts(image_paths, output_dir):
     """Process multiple images, save extracted text, and create navigation."""
     text_dir = os.path.join(output_dir, "ExtractedTexts")
     os.makedirs(text_dir, exist_ok=True)
+    raw_dir = "RawTexts"
 
     saved_files = []
 
-    raw_dir = [
-        os.path.join(dir_path, "RawTexts", f"Page_{i + 1}.txt") for i in range(0, image_dir_len)
+    raw_dirs = [
+        os.path.join(dir_path, raw_dir, f"Page_{i + 1}.txt")
+        for i in range(0, image_dir_len)
     ]
 
+    os.makedirs(os.path.join(dir_path, raw_dir), exist_ok=True)
+
     # Check if the raw text file exists
-    if not os.path.exists(raw_dir[0]):
+    if not os.path.exists(raw_dirs[0]):
         # Cloud Vision API has a limit of 16 images per request
         extracted_texts = []
         for i in range(0, len(image_paths), 16):
-            temp = batch_extract_text_from_images(
-                image_paths[i : i + 16]
-            )
+            temp = batch_extract_text_from_images(image_paths[i : i + 16])
             extracted_texts.extend(temp)
 
         for j, extracted_text in enumerate(extracted_texts):
             save_text_to_file(
-                extracted_text, os.path.join(dir_path, "RawTexts", f"Page_{j + 1}.txt")
+                extracted_text, os.path.join(dir_path, raw_dir, f"Page_{j + 1}.txt")
             )
     else:
-        extracted_texts = [
-            open(file, "r", encoding="utf-8").read() for file in raw_dir
-        ]
+        extracted_texts = [open(file, "r", encoding="utf-8").read() for file in raw_dirs]
 
     for i, image_path in enumerate(image_paths):
         output_path = os.path.join(text_dir, f"Page_{i + 1}.txt")
+        image_gif = os.path.join(dir_path, "Images GIF", f"{image_prefix} ({i})_1.gif")
 
         # Check if the text has already been extracted
         if os.path.exists(output_path):
@@ -279,7 +333,7 @@ def process_images_to_texts(image_paths, output_dir):
 
         # Save the formatted text
         save_text_to_file(translated_text, output_path)
-        saved_files.append(output_path)
+        saved_files.append([output_path, image_gif.replace(image_prefix, "${getImagePrefix()}")])
 
     if saved_files:
         navigation_html = generate_dynamic_html(saved_files, output_dir)
@@ -289,7 +343,9 @@ def getLengthOfImages(path):
     count = 0
     # Get total number of images in the folder
     for _, _, files in os.walk(path):
-        count += len(files)
+        for file in files:
+            if not file.endswith("1.gif"):
+                count += 1
     return count
 
 
@@ -299,7 +355,7 @@ if __name__ == "__main__":
 
     image_paths = [
         os.path.join(dir_path, "Images GIF", f"{image_prefix} ({i}).gif")
-        for i in range(0, image_dir_len+missing_num)
+        for i in range(0, image_dir_len + missing_num)
         if os.path.exists(
             os.path.join(dir_path, "Images GIF", f"{image_prefix} ({i}).gif")
         )
