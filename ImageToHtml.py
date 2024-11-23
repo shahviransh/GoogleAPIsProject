@@ -12,7 +12,7 @@ load_dotenv()
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 image_prefix = os.getenv("IMAGE_PREFIX")
 missing_num = 0
-dir_path = "Gao Wu, Swallowed Star CG"
+dir_path = "CG, My Comprehension"
 
 
 def batch_extract_text_from_images(image_uris):
@@ -140,8 +140,8 @@ def generate_dynamic_html(file_paths, output_dir):
                 f"""
                 let files = {file_paths};
                 let currentIndex = 0;
-                let tempIndex = 121;
-                let defaultIndex = 121;
+                let tempIndex = 56;
+                let defaultIndex = 56;
 
                 function getImagePrefix() {{
                     return window.env.IMAGE_PREFIX;
@@ -292,8 +292,8 @@ def process_images_to_texts(image_paths, output_dir):
 
     os.makedirs(os.path.join(dir_path, raw_dir), exist_ok=True)
 
-    # Check if the raw text file exists
-    if not os.path.exists(raw_dirs[0]):
+    # Check if all the raw text files exists
+    if not all([os.path.exists(file) for file in raw_dirs]):
         # Cloud Vision API has a limit of 16 images per request
         extracted_texts = []
         for i in range(0, len(image_paths), 16):
@@ -304,6 +304,7 @@ def process_images_to_texts(image_paths, output_dir):
             save_text_to_file(
                 extracted_text, os.path.join(dir_path, raw_dir, f"Page_{j + 1}.txt")
             )
+    
     else:
         extracted_texts = [open(file, "r", encoding="utf-8").read() for file in raw_dirs]
 
