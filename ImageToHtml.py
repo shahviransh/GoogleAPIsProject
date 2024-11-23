@@ -140,8 +140,8 @@ def generate_dynamic_html(file_paths, output_dir):
                 f"""
                 let files = {file_paths};
                 let currentIndex = 0;
-                let tempIndex = 56;
-                let defaultIndex = 56;
+                let tempIndex = 55;
+                let defaultIndex = 55;
 
                 function getImagePrefix() {{
                     return window.env.IMAGE_PREFIX;

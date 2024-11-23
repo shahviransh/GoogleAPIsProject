@@ -120,7 +120,7 @@ def download_and_combine_images(image_urls, output_name):
 
         # Check if there's only one image
         if len(images) == 1:
-            images[0].save(output_name)
+            images[0].save(output_name, quality=95, format="PNG")
             print(f"Single image saved as {output_name}.")
             return
 
@@ -139,7 +139,7 @@ def download_and_combine_images(image_urls, output_name):
             combined_image.paste(img, (0, y_offset))
             y_offset += img.height
 
-        combined_image.save(output_name, format="PNG")
+        combined_image.save(output_name, quality=95, format="PNG")
         print(f"Combined image saved as {output_name}.")
 
     except Exception as e:
