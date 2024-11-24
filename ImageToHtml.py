@@ -314,7 +314,7 @@ def process_images_to_texts(image_paths, output_dir):
 
         # Check if the text has already been extracted
         if os.path.exists(output_path):
-            saved_files.append(output_path)
+            saved_files.append([output_path, image_gif.replace(image_prefix, "${getImagePrefix()}")])
             continue
 
         # Extract text

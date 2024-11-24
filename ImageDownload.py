@@ -33,7 +33,7 @@ def getLengthOfImages(path):
 
 start = 56
 dir_path = "CG, My Comprehension"
-end = 326
+end = 328
 image_prefix = os.getenv("IMAGE_PREFIX")
 
 
