@@ -31,9 +31,9 @@ def getLengthOfImages(path):
     return count
 
 
-start = 56
-dir_path = "CG, My Comprehension"
-end = 328
+start = 123
+dir_path = "Gao Wu, Swallowed Star CG"
+end = 159
 image_prefix = os.getenv("IMAGE_PREFIX")
 
 

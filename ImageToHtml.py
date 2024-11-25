@@ -12,8 +12,7 @@ load_dotenv()
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 image_prefix = os.getenv("IMAGE_PREFIX")
 missing_num = 0
-dir_path = "CG, My Comprehension"
-
+dir_path = "Gao Wu, Swallowed Star CG"
 
 def batch_extract_text_from_images(image_uris):
     """Extract text from multiple images using Google Cloud Vision API."""
@@ -58,7 +57,7 @@ def upload_to_gcs(bucket_name, image_paths):
             print(f"Skipping {image}, already exists in {bucket_name}/{blob_name}")
             continue
         blob.upload_from_filename(image)
-        print(f"File {image} uploaded to {blob_name}.")
+        print(f"File {image} uploaded to {bucket_name}/{blob_name}.")
 
     return link_gs
 
@@ -140,8 +139,8 @@ def generate_dynamic_html(file_paths, output_dir):
                 f"""
                 let files = {file_paths};
                 let currentIndex = 0;
-                let tempIndex = 55;
-                let defaultIndex = 55;
+                let tempIndex = 346;
+                let defaultIndex = 515;
 
                 function getImagePrefix() {{
                     return window.env.IMAGE_PREFIX;
