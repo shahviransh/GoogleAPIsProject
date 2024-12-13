@@ -6,6 +6,10 @@
 cloudAPIKey.json
 cookies.json
 config.js
+progress.json
+results.json
+novel_links.txt
+results.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
