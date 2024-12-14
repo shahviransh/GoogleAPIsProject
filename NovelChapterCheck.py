@@ -163,4 +163,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except FetchError as fe:
+        print(f"An error occurred: {fe}")
+        sys.exit(1)
