@@ -31,6 +31,7 @@ def get_soup(url):
             return BeautifulSoup(response.text, "html.parser")
         except requests.exceptions.RequestException as e:
             print(f"Error fetching {url}: {e}")
+            exit()
             return None
 
 
@@ -151,11 +152,8 @@ def main():
                     if any(chapter["found_terms"].values()):
                         for term, found in chapter["found_terms"].items():
                             if found:
-                                f.write(f"{result['novel_url']}\n")
+                                f.write(f"{result['novel_url']}")
                                 f.write(f"  {chapter['chapter_url']}\n")
-                                f.write(f"    Found: {term}\n")
-                                f.write("\n")
-
     print(f"\nSearch complete. Results saved in {OUTPUT_FILE}")
 
 
