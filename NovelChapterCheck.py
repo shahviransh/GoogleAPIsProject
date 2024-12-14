@@ -125,6 +125,7 @@ def main():
     all_results = load_progress()
     completed_novels = {result["novel_url"] for result in all_results}
     total_novels = len([novel_url for novel_url in novel_links if novel_url not in completed_novels])
+    print(f"\nProcessing {total_novels} novels...")
 
     with ThreadPoolExecutor(max_workers=10) as executor, alive_bar(total_novels) as bar:
         future_to_novel = {
