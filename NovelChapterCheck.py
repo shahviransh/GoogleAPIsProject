@@ -14,7 +14,7 @@ load_dotenv()
 
 BASE_URL = os.getenv("CRAWL_URL")
 NOVEL_LINKS_FILE = "novel_links.txt"
-OUTPUT_FILE = "results.txt"
+OUTPUT_FILE = "final.json"
 PROGRESS_FILE = "results.json"
 CHAPTER_LIMIT = 5
 SEARCH_TERMS = os.getenv("KEYWORDS").split(",")
@@ -150,15 +150,21 @@ def main():
             except Exception as exc:
                 raise FetchError(f"Error processing novel {novel_url}: {exc}")
 
+        filtered_results = []
         # Save to text file all results that are True
         with open(OUTPUT_FILE, "w") as f:
             for result in all_results:
                 for chapter in result["results"]:
                     if any(chapter["found_terms"].values()):
-                        for term, found in chapter["found_terms"].items():
-                            if found:
-                                f.write(f"{result['novel_url']}")
-                                f.write(f"  {chapter['chapter_url']}\n")
+                        # Prepare a dictionary for each chapter where terms are found
+                        chapter_data = {
+                            "novel_url": result["novel_url"],
+                            "chapter_url": chapter["chapter_url"],
+                            "found_terms": {term: found for term, found in chapter["found_terms"].items() if found}
+                        }
+                        filtered_results.append(chapter_data)
+            # Dump the list of filtered results to a JSON file
+            json.dump(filtered_results, f, indent=4)
     print(f"\nSearch complete. Results saved in {OUTPUT_FILE}")
 
 
