@@ -26,6 +26,7 @@ def get_soup(url):
     """Fetch the content of a URL and return a BeautifulSoup object."""
     with soup_lock:  # Ensure only one thread can execute this block at a time
         try:
+            time.sleep(1)  # Add a delay to avoid hitting the server too frequently
             response = requests.get(url)
             response.raise_for_status()
             return BeautifulSoup(response.text, "html.parser")
