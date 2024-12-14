@@ -7,6 +7,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Lock
 from alive_progress import alive_bar
+import sys
 
 # Load environment variables from a .env file
 load_dotenv()
@@ -32,6 +33,7 @@ def get_soup(url):
             return BeautifulSoup(response.text, "html.parser")
         except requests.exceptions.RequestException as e:
             print(f"Error fetching {url}: {e}")
+            sys.exit(1)
             return None
 
 
