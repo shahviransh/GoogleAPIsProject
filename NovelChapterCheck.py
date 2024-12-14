@@ -22,6 +22,10 @@ SEARCH_TERMS = os.getenv("KEYWORDS").split(",")
 # Create a lock for get_soup
 soup_lock = Lock()
 
+class FetchError(Exception):
+    """Exception raised when fetching data fails."""
+    pass
+
 
 def get_soup(url):
     """Fetch the content of a URL and return a BeautifulSoup object."""
@@ -32,9 +36,7 @@ def get_soup(url):
             response.raise_for_status()
             return BeautifulSoup(response.text, "html.parser")
         except requests.exceptions.RequestException as e:
-            print(f"Error fetching {url}: {e}")
-            sys.exit(1)
-            return None
+            raise FetchError(f"Error fetching {url}: {e}")
 
 
 def extract_chapter_links(novel_url):
@@ -93,7 +95,7 @@ def process_novel(novel_url):
                     print(f"  Found terms in chapter: {chapter_url}")
                     break
             except Exception as exc:
-                print(f"  Error searching chapter {chapter_url}: {exc}")
+                raise FetchError(f"Error processing chapter {chapter_url}: {exc}")
 
     return novel_results
 
@@ -104,7 +106,7 @@ def save_progress(results):
         with open(PROGRESS_FILE, "w") as f:
             json.dump(results, f, indent=4)
     except Exception as e:
-        print(f"Error saving progress: {e}")
+        raise FetchError(f"Error saving progress: {e}")
 
 
 def load_progress():
@@ -114,7 +116,7 @@ def load_progress():
             with open(PROGRESS_FILE, "r") as f:
                 return json.load(f)
         except Exception as e:
-            print(f"Error loading progress: {e}")
+            raise FetchError(f"Error loading progress: {e}")
     return []
 
 
@@ -146,7 +148,7 @@ def main():
                     save_progress(all_results)  # Save after each novel
                 bar()
             except Exception as exc:
-                print(f"Error processing novel {novel_url}: {exc}")
+                raise FetchError(f"Error processing novel {novel_url}: {exc}")
 
         # Save to text file all results that are True
         with open(OUTPUT_FILE, "w") as f:
