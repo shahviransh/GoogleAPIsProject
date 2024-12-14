@@ -32,7 +32,6 @@ def get_soup(url):
             return BeautifulSoup(response.text, "html.parser")
         except requests.exceptions.RequestException as e:
             print(f"Error fetching {url}: {e}")
-            exit()
             return None
 
 
