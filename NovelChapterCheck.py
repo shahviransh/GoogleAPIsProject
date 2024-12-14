@@ -75,7 +75,7 @@ def process_novel(novel_url):
     chapter_links = extract_chapter_links(novel_url)
     novel_results = []
 
-    with ThreadPoolExecutor(max_workers=5) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_chapter = {
             executor.submit(search_terms_in_chapter, chapter_url): chapter_url
             for chapter_url in chapter_links
@@ -126,7 +126,7 @@ def main():
     completed_novels = {result["novel_url"] for result in all_results}
     total_novels = len([novel_url for novel_url in novel_links if novel_url not in completed_novels])
 
-    with ThreadPoolExecutor(max_workers=5) as executor, alive_bar(total_novels) as bar:
+    with ThreadPoolExecutor(max_workers=10) as executor, alive_bar(total_novels) as bar:
         future_to_novel = {
             executor.submit(process_novel, novel_url): novel_url
             for novel_url in novel_links
