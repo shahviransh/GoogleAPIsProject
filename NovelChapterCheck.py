@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from threading import Lock
+import threading
 from alive_progress import alive_bar
 import sys
 
