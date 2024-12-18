@@ -7,8 +7,8 @@ import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import vertexai
 from vertexai.generative_models import GenerativeModel
-import threading
 import sys
+import threading
 
 # Load environment variables from a .env file
 load_dotenv()
@@ -22,45 +22,41 @@ PROGRESS_FILE = "results.json"
 CHAPTER_LIMIT = 5
 SEARCH_TERMS = os.getenv("KEYWORDS").split(",")
 
-# Create a lock for get_soup
-lock = threading.Semaphore(1)
+# Remove the unnecessary use of lock in requests
+lock = threading.Lock()
+vertexai.init(project=PROJECT_ID, location="us-central1")
 
 
 def get_soup(url):
     """Fetch the content of a URL and return a BeautifulSoup object."""
-    with lock:  # Ensure only one thread can execute this block at a time
+    with lock:
         try:
-            time.sleep(0.5)  # Add a delay to avoid hitting the server too frequently
-            response = requests.get(url)
+            response = requests.get(url, timeout=10)  # Set timeout to avoid hanging
             response.raise_for_status()
             return BeautifulSoup(response.text, "html.parser")
         except requests.exceptions.RequestException as e:
-            raise RuntimeError(f"Error fetching {url}: {e}")
+            print(f"Error fetching {url}: {e}")
+            sys.exit(1)  # Exit immediately on any network error
 
 
 def gemini_response(text):
     """Formats translated text using the Gemini API."""
+    with lock:
+        try:
+            model = GenerativeModel("gemini-1.5-pro-002")
+            response = model.generate_content(
+                [
+                    f"""
+                    {promptQuestion}
 
-    project_id = PROJECT_ID
-    location = "us-central1"
-
-    # Initialize the Vertex AI client
-    vertexai.init(project=project_id, location=location)
-
-    model = GenerativeModel("gemini-1.5-pro-002")
-
-    # Create a Gemini model instance
-    response = model.generate_content(
-        [
-            f"""
-            {promptQuestion}
-
-            {text}
-            """
-        ]
-    )
-
-    return response.text
+                    {text}
+                    """
+                ]
+            )
+            return response.text
+        except Exception as e:
+            print(f"Error in Gemini API response: {e}")
+            sys.exit(1)  # Exit immediately on any API error
 
 
 def extract_chapter_links(novel_url):
@@ -73,6 +69,7 @@ def extract_chapter_links(novel_url):
     # Extract chapter links from the unordered list in the '#chpagedlist' section
     ul_tag = soup.select_one("#chpagedlist ul.chapter-list")
     if not ul_tag:
+        print(f"Chapter list not found for {novel_url}")
         return chapter_links
 
     for li_tag in ul_tag.find_all("li")[:CHAPTER_LIMIT]:
@@ -81,7 +78,6 @@ def extract_chapter_links(novel_url):
             href = a_tag.get("href")
             if href:
                 chapter_links.append(BASE_URL + href)
-
     return chapter_links
 
 
@@ -89,22 +85,16 @@ def search_terms_in_chapter(chapter_url):
     """Search for specific terms in a chapter's content."""
     soup = get_soup(chapter_url)
     if soup is None:
-        return {term: False for term in SEARCH_TERMS}
-
+        sys.exit(1)
     text_content = soup.find("div", class_="chapter-content")
     text_content = (
         text_content.get_text(separator=" ", strip=True) if text_content else ""
     )
 
-    respose = None
     if text_content != "" and any(term in text_content for term in SEARCH_TERMS):
-        # Call the Gemini API to get a response
-        with lock:
-            respose = gemini_response(text_content)
-
-    # Check if the response contains yes
-    if respose is not None and "yes" in respose:
-        return {term: True for term in SEARCH_TERMS}
+        response = gemini_response(text_content)
+        if response and "yes" in response:
+            return {term: True for term in SEARCH_TERMS}
 
     return {term: False for term in SEARCH_TERMS}
 
@@ -114,24 +104,25 @@ def process_novel(novel_url):
     chapter_links = extract_chapter_links(novel_url)
     novel_results = []
 
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_chapter = {
             executor.submit(search_terms_in_chapter, chapter_url): chapter_url
             for chapter_url in chapter_links
         }
 
         for future in as_completed(future_to_chapter):
-            chapter_url = future_to_chapter[future]
+            if future.exception() is not None:
+                print(f"Error processing chapter: {future.exception()}")
+                sys.exit(1)  # Stop everything on any error
             try:
+                chapter_url = future_to_chapter[future]
                 found_terms = future.result()
                 novel_results.append(
                     {"chapter_url": chapter_url, "found_terms": found_terms}
                 )
-                if any(found_terms.values()):
-                    print(f"  Found terms in chapter: {chapter_url}")
-                    break
             except Exception as exc:
-                raise RuntimeError(f"Error processing chapter {chapter_url}: {exc}")
+                print(f"Error processing chapter {chapter_url}: {exc}")
+                sys.exit(1)  # Stop everything on any error
 
     return novel_results
 
@@ -139,10 +130,13 @@ def process_novel(novel_url):
 def save_progress(results):
     """Save progress to a JSON file."""
     try:
-        with open(PROGRESS_FILE, "w") as f:
+        temp_file = f"{PROGRESS_FILE}.tmp"
+        with open(temp_file, "w") as f:
             json.dump(results, f, indent=4)
+        os.replace(temp_file, PROGRESS_FILE)  # Atomic write
     except Exception as e:
-        raise RuntimeError(f"Error saving progress: {e}")
+        print(f"Error saving progress: {e}")
+        sys.exit(1)  # Exit if progress cannot be saved
 
 
 def load_progress():
@@ -152,14 +146,19 @@ def load_progress():
             with open(PROGRESS_FILE, "r") as f:
                 return json.load(f)
         except Exception as e:
-            raise RuntimeError(f"Error loading progress: {e}")
+            print(f"Error loading progress: {e}")
+            sys.exit(1)  # Exit if progress cannot be loaded
     return []
 
 
 def main():
     """Main function to process all novel links and search for terms in their chapters."""
-    with open(NOVEL_LINKS_FILE, "r") as file:
-        novel_links = [line.strip() for line in file.readlines()]
+    try:
+        with open(NOVEL_LINKS_FILE, "r") as file:
+            novel_links = [line.strip() for line in file.readlines()]
+    except Exception as e:
+        print(f"Error reading novel links file: {e}")
+        sys.exit(1)  # Exit if the novel links file can't be read
 
     all_results = load_progress()
     completed_novels = {result["novel_url"] for result in all_results}
@@ -168,7 +167,7 @@ def main():
     )
     print(f"\nProcessing {total_novels} novels...")
 
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_novel = {
             executor.submit(process_novel, novel_url): novel_url
             for novel_url in novel_links
@@ -176,16 +175,20 @@ def main():
         }
 
         for future in as_completed(future_to_novel):
-            novel_url = future_to_novel[future]
+            if future.exception() is not None:
+                print(f"Error processing novel: {future.exception()}")
+                sys.exit(1)  # Stop everything on any error
             try:
+                novel_url = future_to_novel[future]
                 novel_results = future.result()
                 if novel_results:
                     all_results.append(
                         {"novel_url": novel_url, "results": novel_results}
                     )
-                    save_progress(all_results)  # Save after each novel
+                    save_progress(all_results)
             except Exception as exc:
-                raise RuntimeError(f"Error processing novel {novel_url}: {exc}")
+                print(f"Error processing novel {novel_url}: {exc}")
+                sys.exit(1)  # Stop everything on any error
 
         filtered_results = []
         # Save to text file all results that are True
@@ -212,6 +215,9 @@ def main():
 if __name__ == "__main__":
     try:
         main()
+    except KeyboardInterrupt:
+        print("\nManual interruption. Exiting...")
+        sys.exit(1)
     except Exception as exc:
-        print(f"An error occurred: {exc}")
+        print(f"An unexpected error occurred: {exc}")
         sys.exit(1)
