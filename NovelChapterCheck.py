@@ -20,10 +20,12 @@ CHAPTER_LIMIT = 5
 SEARCH_TERMS = os.getenv("KEYWORDS").split(",")
 
 # Create a lock for get_soup
-soup_lock = Lock()
+soup_lock = threading.Semaphore(2)
+
 
 class FetchError(Exception):
     """Exception raised when fetching data fails."""
+
     pass
 
 
@@ -31,7 +33,7 @@ def get_soup(url):
     """Fetch the content of a URL and return a BeautifulSoup object."""
     with soup_lock:  # Ensure only one thread can execute this block at a time
         try:
-            time.sleep(1)  # Add a delay to avoid hitting the server too frequently
+            time.sleep(0.5)  # Add a delay to avoid hitting the server too frequently
             response = requests.get(url)
             response.raise_for_status()
             return BeautifulSoup(response.text, "html.parser")
@@ -67,8 +69,10 @@ def search_terms_in_chapter(chapter_url):
     if soup is None:
         return {term: False for term in SEARCH_TERMS}
 
-    text_content = soup.find('div', class_='chapter-content')
-    text_content = text_content.get_text(separator=' ', strip=True) if text_content else ""
+    text_content = soup.find("div", class_="chapter-content")
+    text_content = (
+        text_content.get_text(separator=" ", strip=True) if text_content else ""
+    )
     found_terms = {term: term in text_content for term in SEARCH_TERMS}
     return found_terms
 
@@ -127,7 +131,9 @@ def main():
 
     all_results = load_progress()
     completed_novels = {result["novel_url"] for result in all_results}
-    total_novels = len([novel_url for novel_url in novel_links if novel_url not in completed_novels])
+    total_novels = len(
+        [novel_url for novel_url in novel_links if novel_url not in completed_novels]
+    )
     print(f"\nProcessing {total_novels} novels...")
 
     with ThreadPoolExecutor(max_workers=10) as executor, alive_bar(total_novels) as bar:
@@ -160,7 +166,11 @@ def main():
                         chapter_data = {
                             "novel_url": result["novel_url"],
                             "chapter_url": chapter["chapter_url"],
-                            "found_terms": {term: found for term, found in chapter["found_terms"].items() if found}
+                            "found_terms": {
+                                term: found
+                                for term, found in chapter["found_terms"].items()
+                                if found
+                            },
                         }
                         filtered_results.append(chapter_data)
             # Dump the list of filtered results to a JSON file
