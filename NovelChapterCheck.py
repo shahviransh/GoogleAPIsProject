@@ -36,7 +36,7 @@ def get_soup(url):
             return BeautifulSoup(response.text, "html.parser")
         except requests.exceptions.RequestException as e:
             print(f"Error fetching {url}: {e}")
-            sys.exit(1)  # Exit immediately on any network error
+            os._exit(1)  # Exit immediately on any network error
 
 
 def gemini_response(text):
@@ -57,7 +57,7 @@ def gemini_response(text):
             return response.text
         except Exception as e:
             print(f"Error in Gemini API response: {e}")
-            sys.exit(1)  # Exit immediately on any API error
+            os._exit(1)  # Exit immediately on any API error
 
 
 def extract_chapter_links(novel_url):
@@ -86,7 +86,7 @@ def search_terms_in_chapter(chapter_url):
     """Search for specific terms in a chapter's content."""
     soup = get_soup(chapter_url)
     if soup is None:
-        sys.exit(1)
+        os._exit(1)
     text_content = soup.find("div", class_="chapter-content")
     text_content = (
         text_content.get_text(separator=" ", strip=True) if text_content else ""
@@ -114,7 +114,7 @@ def process_novel(novel_url):
         for future in as_completed(future_to_chapter):
             if future.exception() is not None:
                 print(f"Error processing chapter: {future.exception()}")
-                sys.exit(1)  # Stop everything on any error
+                os._exit(1)  # Stop everything on any error
             try:
                 chapter_url = future_to_chapter[future]
                 found_terms = future.result()
@@ -123,7 +123,7 @@ def process_novel(novel_url):
                 )
             except Exception as exc:
                 print(f"Error processing chapter {chapter_url}: {exc}")
-                sys.exit(1)  # Stop everything on any error
+                os._exit(1)  # Stop everything on any error
 
     return novel_results
 
@@ -137,7 +137,7 @@ def save_progress(results):
         os.replace(temp_file, PROGRESS_FILE)  # Atomic write
     except Exception as e:
         print(f"Error saving progress: {e}")
-        sys.exit(1)  # Exit if progress cannot be saved
+        os._exit(1)  # Exit if progress cannot be saved
 
 
 def load_progress():
@@ -148,7 +148,7 @@ def load_progress():
                 return json.load(f)
         except Exception as e:
             print(f"Error loading progress: {e}")
-            sys.exit(1)  # Exit if progress cannot be loaded
+            os._exit(1)  # Exit if progress cannot be loaded
     return []
 
 
@@ -159,7 +159,7 @@ def main():
             novel_links = [line.strip() for line in file.readlines()]
     except Exception as e:
         print(f"Error reading novel links file: {e}")
-        sys.exit(1)  # Exit if the novel links file can't be read
+        os._exit(1)  # Exit if the novel links file can't be read
 
     all_results = load_progress()
     completed_novels = {result["novel_url"] for result in all_results}
@@ -178,7 +178,7 @@ def main():
         for future in as_completed(future_to_novel):
             if future.exception() is not None:
                 print(f"Error processing novel: {future.exception()}")
-                sys.exit(1)  # Stop everything on any error
+                os._exit(1)  # Stop everything on any error
             try:
                 novel_url = future_to_novel[future]
                 novel_results = future.result()
@@ -189,7 +189,7 @@ def main():
                     save_progress(all_results)
             except Exception as exc:
                 print(f"Error processing novel {novel_url}: {exc}")
-                sys.exit(1)  # Stop everything on any error
+                os._exit(1)  # Stop everything on any error
 
         filtered_results = []
         # Save to text file all results that are True
@@ -218,7 +218,7 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         print("\nManual interruption. Exiting...")
-        sys.exit(1)
+        os._exit(1)
     except Exception as exc:
         print(f"An unexpected error occurred: {exc}")
-        sys.exit(1)
+        os._exit(1)
