@@ -23,12 +23,12 @@ CHAPTER_LIMIT = 5
 SEARCH_TERMS = os.getenv("KEYWORDS").split(",")
 
 # Create a lock for get_soup
-soup_lock = threading.Semaphore(1)
+lock = threading.Semaphore(1)
 
 
 def get_soup(url):
     """Fetch the content of a URL and return a BeautifulSoup object."""
-    with soup_lock:  # Ensure only one thread can execute this block at a time
+    with lock:  # Ensure only one thread can execute this block at a time
         try:
             time.sleep(0.5)  # Add a delay to avoid hitting the server too frequently
             response = requests.get(url)
@@ -99,7 +99,7 @@ def search_terms_in_chapter(chapter_url):
     respose = None
     if text_content != "" and any(term in text_content for term in SEARCH_TERMS):
         # Call the Gemini API to get a response
-        with soup_lock:
+        with lock:
             respose = gemini_response(text_content)
 
     # Check if the response contains yes
