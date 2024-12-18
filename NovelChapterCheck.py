@@ -84,6 +84,7 @@ def extract_chapter_links(novel_url):
 
 def search_terms_in_chapter(chapter_url):
     """Search for specific terms in a chapter's content."""
+    chapter_url = chapter_url.replace("?", "")  # Remove any query parameters
     soup = get_soup(chapter_url)
     if soup is None:
         os._exit(1)
@@ -112,9 +113,6 @@ def process_novel(novel_url):
         }
 
         for future in as_completed(future_to_chapter):
-            if future.exception() is not None:
-                print(f"Error processing chapter: {future.exception()}")
-                os._exit(1)  # Stop everything on any error
             try:
                 chapter_url = future_to_chapter[future]
                 found_terms = future.result()
@@ -176,9 +174,6 @@ def main():
         }
 
         for future in as_completed(future_to_novel):
-            if future.exception() is not None:
-                print(f"Error processing novel: {future.exception()}")
-                os._exit(1)  # Stop everything on any error
             try:
                 novel_url = future_to_novel[future]
                 novel_results = future.result()
