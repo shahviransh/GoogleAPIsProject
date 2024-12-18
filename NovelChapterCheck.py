@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 import os
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import vertexai
+from vertexai.generative_models import GenerativeModel
 import threading
 from alive_progress import alive_bar
 import sys
@@ -12,6 +14,7 @@ import sys
 # Load environment variables from a .env file
 load_dotenv()
 
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 BASE_URL = os.getenv("CRAWL_URL")
 NOVEL_LINKS_FILE = "novel_links.txt"
 OUTPUT_FILE = "final.json"
@@ -39,6 +42,31 @@ def get_soup(url):
             return BeautifulSoup(response.text, "html.parser")
         except requests.exceptions.RequestException as e:
             raise FetchError(f"Error fetching {url}: {e}")
+
+
+def gemini_response(text):
+    """Formats translated text using the Gemini API."""
+
+    project_id = PROJECT_ID
+    location = "us-central1"
+
+    # Initialize the Vertex AI client
+    vertexai.init(project=project_id, location=location)
+
+    model = GenerativeModel("gemini-1.5-pro-002")
+
+    # Create a Gemini model instance
+    response = model.generate_content(
+        [
+            f"""
+            Is the chapter about a male main character and he can see favorability/intimacy values of female characters? Give only one word answer of yes or no.
+
+            {text}
+            """
+        ]
+    )
+
+    return response.text
 
 
 def extract_chapter_links(novel_url):
@@ -73,8 +101,17 @@ def search_terms_in_chapter(chapter_url):
     text_content = (
         text_content.get_text(separator=" ", strip=True) if text_content else ""
     )
-    found_terms = {term: term in text_content for term in SEARCH_TERMS}
-    return found_terms
+
+    respose = None
+    if text_content != "":
+        # Call the Gemini API to get a response
+        respose = gemini_response(text_content)
+
+    # Check if the response contains yes
+    if respose is not None and "yes" in respose:
+        return {term: True for term in SEARCH_TERMS}
+
+    return {term: False for term in SEARCH_TERMS}
 
 
 def process_novel(novel_url):
