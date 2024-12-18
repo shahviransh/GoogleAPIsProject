@@ -27,12 +27,6 @@ SEARCH_TERMS = os.getenv("KEYWORDS").split(",")
 soup_lock = threading.Semaphore(1)
 
 
-class FetchError(Exception):
-    """Exception raised when fetching data fails."""
-
-    pass
-
-
 def get_soup(url):
     """Fetch the content of a URL and return a BeautifulSoup object."""
     with soup_lock:  # Ensure only one thread can execute this block at a time
@@ -42,7 +36,7 @@ def get_soup(url):
             response.raise_for_status()
             return BeautifulSoup(response.text, "html.parser")
         except requests.exceptions.RequestException as e:
-            raise FetchError(f"Error fetching {url}: {e}")
+            raise RuntimeError(f"Error fetching {url}: {e}")
 
 
 def gemini_response(text):
@@ -137,7 +131,7 @@ def process_novel(novel_url):
                     print(f"  Found terms in chapter: {chapter_url}")
                     break
             except Exception as exc:
-                raise FetchError(f"Error processing chapter {chapter_url}: {exc}")
+                raise RuntimeError(f"Error processing chapter {chapter_url}: {exc}")
 
     return novel_results
 
@@ -148,7 +142,7 @@ def save_progress(results):
         with open(PROGRESS_FILE, "w") as f:
             json.dump(results, f, indent=4)
     except Exception as e:
-        raise FetchError(f"Error saving progress: {e}")
+        raise RuntimeError(f"Error saving progress: {e}")
 
 
 def load_progress():
@@ -158,7 +152,7 @@ def load_progress():
             with open(PROGRESS_FILE, "r") as f:
                 return json.load(f)
         except Exception as e:
-            raise FetchError(f"Error loading progress: {e}")
+            raise RuntimeError(f"Error loading progress: {e}")
     return []
 
 
@@ -192,7 +186,7 @@ def main():
                     save_progress(all_results)  # Save after each novel
                 bar()
             except Exception as exc:
-                raise FetchError(f"Error processing novel {novel_url}: {exc}")
+                raise RuntimeError(f"Error processing novel {novel_url}: {exc}")
 
         filtered_results = []
         # Save to text file all results that are True
