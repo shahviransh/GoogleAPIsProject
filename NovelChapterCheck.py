@@ -22,7 +22,6 @@ PROGRESS_FILE = "results.json"
 CHAPTER_LIMIT = 5
 SEARCH_TERMS = os.getenv("KEYWORDS").split(",")
 
-# Remove the unnecessary use of lock in requests
 lock = threading.Lock()
 vertexai.init(project=PROJECT_ID, location="us-central1")
 
@@ -31,7 +30,7 @@ def get_soup(url):
     """Fetch the content of a URL and return a BeautifulSoup object."""
     with lock:
         try:
-            response = requests.get(url, timeout=10)  # Set timeout to avoid hanging
+            response = requests.get(url)
             response.raise_for_status()
             return BeautifulSoup(response.text, "html.parser")
         except requests.exceptions.RequestException as e:
