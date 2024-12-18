@@ -99,7 +99,8 @@ def search_terms_in_chapter(chapter_url):
     respose = None
     if text_content != "" and any(term in text_content for term in SEARCH_TERMS):
         # Call the Gemini API to get a response
-        respose = gemini_response(text_content)
+        with soup_lock:
+            respose = gemini_response(text_content)
 
     # Check if the response contains yes
     if respose is not None and "yes" in respose:
