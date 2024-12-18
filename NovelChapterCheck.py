@@ -16,6 +16,7 @@ load_dotenv()
 
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 BASE_URL = os.getenv("CRAWL_URL")
+promptQuestion = os.getenv("PROMPT_QUESTION")
 NOVEL_LINKS_FILE = "novel_links.txt"
 OUTPUT_FILE = "final.json"
 PROGRESS_FILE = "results.json"
@@ -23,7 +24,7 @@ CHAPTER_LIMIT = 5
 SEARCH_TERMS = os.getenv("KEYWORDS").split(",")
 
 # Create a lock for get_soup
-soup_lock = threading.Semaphore(2)
+soup_lock = threading.Semaphore(1)
 
 
 class FetchError(Exception):
@@ -59,7 +60,7 @@ def gemini_response(text):
     response = model.generate_content(
         [
             f"""
-            Is the chapter about a male main character and he can see favorability/intimacy values of female characters? Give only one word answer of yes or no.
+            {promptQuestion}
 
             {text}
             """
@@ -103,7 +104,7 @@ def search_terms_in_chapter(chapter_url):
     )
 
     respose = None
-    if text_content != "":
+    if text_content != "" and any(term in text_content for term in SEARCH_TERMS):
         # Call the Gemini API to get a response
         respose = gemini_response(text_content)
 
@@ -218,6 +219,6 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    except FetchError as fe:
-        print(f"An error occurred: {fe}")
+    except Exception as exc:
+        print(f"An error occurred: {exc}")
         sys.exit(1)
