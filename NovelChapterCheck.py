@@ -161,7 +161,7 @@ def main():
     with open(NOVEL_LINKS_FILE, "r") as file:
         novel_links = [line.strip() for line in file.readlines()]
 
-    print("(!)")
+    raise RuntimeError("No novel links found in 'novel_links.txt' file.")
 
     all_results = load_progress()
     completed_novels = {result["novel_url"] for result in all_results}
