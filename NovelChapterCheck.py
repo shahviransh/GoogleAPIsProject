@@ -8,7 +8,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import vertexai
 from vertexai.generative_models import GenerativeModel
 import threading
-from alive_progress import alive_bar
 import sys
 
 # Load environment variables from a .env file
@@ -168,7 +167,7 @@ def main():
     )
     print(f"\nProcessing {total_novels} novels...")
 
-    with ThreadPoolExecutor(max_workers=10) as executor, alive_bar(total_novels) as bar:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_novel = {
             executor.submit(process_novel, novel_url): novel_url
             for novel_url in novel_links
@@ -184,7 +183,6 @@ def main():
                         {"novel_url": novel_url, "results": novel_results}
                     )
                     save_progress(all_results)  # Save after each novel
-                bar()
             except Exception as exc:
                 raise RuntimeError(f"Error processing novel {novel_url}: {exc}")
 
