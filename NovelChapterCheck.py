@@ -30,6 +30,7 @@ def get_soup(url):
     """Fetch the content of a URL and return a BeautifulSoup object."""
     with lock:
         try:
+            time.sleep(0.5)  # Add a delay to avoid overloading the server
             response = requests.get(url)
             response.raise_for_status()
             return BeautifulSoup(response.text, "html.parser")
@@ -42,6 +43,7 @@ def gemini_response(text):
     """Formats translated text using the Gemini API."""
     with lock:
         try:
+            time.sleep(0.5)
             model = GenerativeModel("gemini-1.5-pro-002")
             response = model.generate_content(
                 [
