@@ -6,8 +6,13 @@ import os
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import vertexai
-from vertexai.generative_models import GenerativeModel
 import sys
+from vertexai.generative_models import (
+    GenerativeModel,
+    HarmCategory,
+    HarmBlockThreshold,
+    SafetySetting,
+)
 import threading
 
 # Load environment variables from a .env file
@@ -43,8 +48,39 @@ def gemini_response(text):
     """Formats translated text using the Gemini API."""
     with lock:
         try:
-            time.sleep(0.5)
-            model = GenerativeModel("gemini-1.5-pro-001")
+            time.sleep(0.5)  # Artificial delay before API call
+            # Create generative model
+            model = GenerativeModel("gemini-1.5-pro-002")
+
+            # Safety config: Set BLOCK_NONE for only specific harm categories
+            safety_config = [
+                SafetySetting(
+                    category=HarmCategory.HARM_CATEGORY_UNSPECIFIED,
+                    threshold=HarmBlockThreshold.BLOCK_NONE,
+                ),
+                SafetySetting(
+                    category=HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+                    threshold=HarmBlockThreshold.BLOCK_NONE,
+                ),
+                SafetySetting(
+                    category=HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                    threshold=HarmBlockThreshold.BLOCK_NONE,
+                ),
+                SafetySetting(
+                    category=HarmCategory.HARM_CATEGORY_HARASSMENT,
+                    threshold=HarmBlockThreshold.BLOCK_NONE,
+                ),
+                SafetySetting(
+                    category=HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+                    threshold=HarmBlockThreshold.BLOCK_NONE,
+                ),
+                SafetySetting(
+                    category=HarmCategory.HARM_CATEGORY_CIVIC_INTEGRITY,
+                    threshold=HarmBlockThreshold.BLOCK_NONE,
+                ),
+            ]
+
+            # Generate content using the model with the given safety settings
             response = model.generate_content(
                 [
                     f"""
@@ -52,12 +88,15 @@ def gemini_response(text):
 
                     {text}
                     """
-                ]
+                ],
+                safety_settings=safety_config,  # Apply safety settings
             )
+
             return response.text.lower()
+
         except Exception as e:
             print(f"Error in Gemini API response: {e}")
-            os._exit(1)  # Exit immediately on any API error
+            return ""
 
 
 def extract_chapter_links(novel_url):
