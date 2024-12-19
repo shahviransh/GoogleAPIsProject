@@ -55,10 +55,6 @@ def gemini_response(text):
             # Safety config: Set BLOCK_NONE for only specific harm categories
             safety_config = [
                 SafetySetting(
-                    category=HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-                    threshold=HarmBlockThreshold.BLOCK_NONE,
-                ),
-                SafetySetting(
                     category=HarmCategory.HARM_CATEGORY_HATE_SPEECH,
                     threshold=HarmBlockThreshold.BLOCK_NONE,
                 ),
