@@ -54,7 +54,7 @@ def gemini_response(text):
                     """
                 ]
             )
-            return response.text
+            return response.text.lower()
         except Exception as e:
             print(f"Error in Gemini API response: {e}")
             os._exit(1)  # Exit immediately on any API error
