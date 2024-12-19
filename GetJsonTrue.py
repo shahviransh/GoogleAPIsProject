@@ -1,7 +1,7 @@
 import json
 
 def main():
-    with open('data.json', 'r') as f:
+    with open('results.json', 'r') as f:
         data = json.load(f)
     
     printed_urls = set()  # To avoid duplicate prints
