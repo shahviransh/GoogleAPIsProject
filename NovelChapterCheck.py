@@ -44,7 +44,7 @@ def gemini_response(text):
     with lock:
         try:
             time.sleep(0.5)
-            model = GenerativeModel("gemini-1.5-pro-002")
+            model = GenerativeModel("gemini-1.5-pro-001")
             response = model.generate_content(
                 [
                     f"""
