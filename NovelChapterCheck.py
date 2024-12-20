@@ -37,6 +37,9 @@ def get_soup(url):
         try:
             time.sleep(0.5)  # Add a delay to avoid overloading the server
             response = requests.get(url)
+            if response.status_code in [403, 404]:
+                print(f"URL not found (404): {url}")
+                return None
             response.raise_for_status()
             return BeautifulSoup(response.text, "html.parser")
         except requests.exceptions.RequestException as e:
