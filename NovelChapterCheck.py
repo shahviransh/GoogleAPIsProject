@@ -224,25 +224,25 @@ def main():
                 print(f"Error processing novel {novel_url}: {exc}")
                 os._exit(1)  # Stop everything on any error
 
-        filtered_results = []
-        # Save to text file all results that are True
-        with open(OUTPUT_FILE, "w") as f:
-            for result in all_results:
-                for chapter in result["results"]:
-                    if any(chapter["found_terms"].values()):
-                        # Prepare a dictionary for each chapter where terms are found
-                        chapter_data = {
-                            "novel_url": result["novel_url"],
-                            "chapter_url": chapter["chapter_url"],
-                            "found_terms": {
-                                term: found
-                                for term, found in chapter["found_terms"].items()
-                                if found
-                            },
-                        }
-                        filtered_results.append(chapter_data)
-            # Dump the list of filtered results to a JSON file
-            json.dump(filtered_results, f, indent=4)
+    filtered_results = []
+    # Save to text file all results that are True
+    with open(OUTPUT_FILE, "w") as f:
+        for result in all_results:
+            for chapter in result["results"]:
+                if any(chapter["found_terms"].values()):
+                    # Prepare a dictionary for each chapter where terms are found
+                    chapter_data = {
+                        "novel_url": result["novel_url"],
+                        "chapter_url": chapter["chapter_url"],
+                        "found_terms": {
+                            term: found
+                            for term, found in chapter["found_terms"].items()
+                            if found
+                        },
+                    }
+                    filtered_results.append(chapter_data)
+        # Dump the list of filtered results to a JSON file
+        json.dump(filtered_results, f, indent=4)
     print(f"\nSearch complete. Results saved in {OUTPUT_FILE}")
 
 
