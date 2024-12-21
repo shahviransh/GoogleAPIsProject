@@ -9,9 +9,9 @@ def main():
     for dictionary in data:
         for chapter in dictionary["results"]:
             if all(
-                value
+                value == 'true'
                 for term, value in chapter["found_terms"].items()
-                if term.startswith("f") and value is True
+                if term.startswith("f")
             ):
                 if chapter["chapter_url"] not in printed_urls:
                     print(chapter["chapter_url"])
