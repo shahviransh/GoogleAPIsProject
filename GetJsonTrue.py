@@ -9,7 +9,7 @@ def main():
     for dictionary in data:
         for chapter in dictionary["results"]:
             if all(
-                value == 'true'
+                value
                 for term, value in chapter["found_terms"].items()
                 if term.startswith("f")
             ):
