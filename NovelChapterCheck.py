@@ -140,7 +140,7 @@ def search_terms_in_chapter(chapter_url):
     if text_content != "" and any(term in text_content for term in SEARCH_TERMS):
         response = gemini_response(text_content)
         if response and "yes" in response:
-            return {term: True for term in SEARCH_TERMS}
+            return {term: term in text_content for term in SEARCH_TERMS}
 
     return {term: False for term in SEARCH_TERMS}
 
