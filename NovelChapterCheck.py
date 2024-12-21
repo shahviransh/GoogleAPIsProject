@@ -101,6 +101,7 @@ def gemini_response(text):
 def extract_chapter_links(novel_url):
     """Extract the links to the first CHAPTER_LIMIT chapters from the novel's page."""
     chapter_links = []
+    chapter_lim = CHAPTER_LIMIT
     soup = get_soup(novel_url)
     if soup is None:
         return chapter_links
@@ -111,7 +112,11 @@ def extract_chapter_links(novel_url):
         print(f"Chapter list not found for {novel_url}")
         return chapter_links
 
-    for li_tag in ul_tag.find_all("li")[:CHAPTER_LIMIT]:
+    # Ensure CHAPTER_LIMIT does not exceed the number of available <li> tags
+    if chapter_lim > len(li_tags):
+        chapter_lim = len(li_tags)
+
+    for li_tag in ul_tag.find_all("li")[:chapter_lim]:
         a_tag = li_tag.find("a")
         if a_tag:
             href = a_tag.get("href")
