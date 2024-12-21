@@ -113,10 +113,11 @@ def extract_chapter_links(novel_url):
         return chapter_links
 
     # Ensure CHAPTER_LIMIT does not exceed the number of available <li> tags
+    li_tags = ul_tag.find_all("li")
     if chapter_lim > len(li_tags):
         chapter_lim = len(li_tags)
 
-    for li_tag in ul_tag.find_all("li")[:chapter_lim]:
+    for li_tag in li_tags[:chapter_lim]:
         a_tag = li_tag.find("a")
         if a_tag:
             href = a_tag.get("href")
