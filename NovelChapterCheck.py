@@ -131,7 +131,7 @@ def search_terms_in_chapter(chapter_url):
     chapter_url = chapter_url.replace("?", "")  # Remove any query parameters
     soup = get_soup(chapter_url)
     if soup is None:
-        os._exit(1)
+        return {term: False for term in SEARCH_TERMS}
     text_content = soup.find("div", class_="chapter-content")
     text_content = (
         text_content.get_text(separator=" ", strip=True) if text_content else ""
