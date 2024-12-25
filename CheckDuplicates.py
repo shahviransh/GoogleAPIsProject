@@ -28,13 +28,8 @@ def check_duplicates(json_file_path):
         return []
 
 if __name__ == "__main__":
-    # Check if the file path is provided
-    if len(sys.argv) < 2:
-        print("Usage: python check_duplicates.py <path_to_json_file>")
-        sys.exit(1)
-
     # Get the JSON file path from command-line arguments
-    json_file_path = sys.argv[1]
+    json_file_path = "results.json"
 
     # Check for duplicates
     duplicates = check_duplicates(json_file_path)
