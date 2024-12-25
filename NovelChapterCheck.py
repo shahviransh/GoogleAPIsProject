@@ -205,11 +205,10 @@ def main():
 
     all_results = load_progress()
     completed_novels = {result["novel_url"] for result in all_results}
-    total_novels = len(
-        [novel_url for novel_url in novel_links if novel_url not in completed_novels]
-    )
-    print(f"\nProcessing {total_novels} novels...")
+    remaining_novels = [url for url in novel_links if url not in completed_novels]
+    print(f"\nProcessing {len(remaining_novels)} novels...")
 
+    results_buffer = []
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_novel = {
             executor.submit(process_novel, novel_url): novel_url
@@ -222,33 +221,42 @@ def main():
                 novel_url = future_to_novel[future]
                 novel_results = future.result()
                 if novel_results:
-                    all_results.append(
+                    results_buffer.append(
                         {"novel_url": novel_url, "results": novel_results}
                     )
+                # Save progress periodically
+                if len(results_buffer) >= 10:  # Buffer size threshold
+                    all_results.extend(results_buffer)
                     save_progress(all_results)
+                    results_buffer.clear()
             except Exception as exc:
                 print(f"Error processing novel {novel_url}: {exc}")
                 os._exit(1)  # Stop everything on any error
 
-    filtered_results = []
-    # Save to text file all results that are True
+    # Final save for any remaining results
+    if results_buffer:
+        all_results.extend(results_buffer)
+        save_progress(all_results)
+
+    # Filter and save the final results
+    filtered_results = [
+        {
+            "novel_url": result["novel_url"],
+            "chapter_url": chapter["chapter_url"],
+            "found_terms": {
+                term: found
+                for term, found in chapter["found_terms"].items()
+                if found
+            },
+        }
+        for result in all_results
+        for chapter in result["results"]
+        if any(chapter["found_terms"].values())
+    ]
+
     with open(OUTPUT_FILE, "w") as f:
-        for result in all_results:
-            for chapter in result["results"]:
-                if any(chapter["found_terms"].values()):
-                    # Prepare a dictionary for each chapter where terms are found
-                    chapter_data = {
-                        "novel_url": result["novel_url"],
-                        "chapter_url": chapter["chapter_url"],
-                        "found_terms": {
-                            term: found
-                            for term, found in chapter["found_terms"].items()
-                            if found
-                        },
-                    }
-                    filtered_results.append(chapter_data)
-        # Dump the list of filtered results to a JSON file
         json.dump(filtered_results, f, indent=4)
+
     print(f"\nSearch complete. Results saved in {OUTPUT_FILE}")
 
 
