@@ -20,7 +20,7 @@ def check_duplicates(json_file_path):
                 duplicates.append(entry)
             else:
                 novel_urls.add(chapter_url)
-
+        print(novel_urls)
         return duplicates
 
     except Exception as e:
