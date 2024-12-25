@@ -21,9 +21,9 @@ load_dotenv()
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 BASE_URL = os.getenv("CRAWL_URL")
 promptQuestion = os.getenv("PROMPT_QUESTION")
-NOVEL_LINKS_FILE = "novel_links.txt"
-OUTPUT_FILE = "final.json"
-PROGRESS_FILE = "results.json"
+NOVEL_LINKS_FILE = os.path.join(os.getcwd(), "novel_links.txt")
+OUTPUT_FILE = os.path.join(os.getcwd(), "final.json")
+PROGRESS_FILE = os.path.join(os.getcwd(), "results.json")
 CHAPTER_LIMIT = 5
 SEARCH_TERMS = os.getenv("KEYWORDS").split(",")
 
