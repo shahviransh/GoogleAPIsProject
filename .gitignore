@@ -9,7 +9,7 @@ config.js
 progress.json
 results.json
 novel_links.txt
-results.txt
+script.ps1
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
