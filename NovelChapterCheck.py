@@ -212,8 +212,7 @@ def main():
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_novel = {
             executor.submit(process_novel, novel_url): novel_url
-            for novel_url in novel_links
-            if novel_url not in completed_novels
+            for novel_url in remaining_novels
         }
 
         for future in as_completed(future_to_novel):
