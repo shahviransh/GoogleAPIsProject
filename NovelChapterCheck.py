@@ -6,6 +6,7 @@ import os
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import vertexai
+import gzip
 import sys
 from vertexai.generative_models import (
     GenerativeModel,
@@ -14,14 +15,10 @@ from vertexai.generative_models import (
     SafetySetting,
 )
 import threading
-from flask import Flask
+from flask import Flask, send_file
 import threading
 
 app = Flask(__name__)
-
-@app.route("/")
-def health_check():
-    return "OK", 200
 
 # Load environment variables from a .env file
 load_dotenv()
@@ -265,6 +262,29 @@ def main():
         json.dump(filtered_results, f, indent=4)
 
     print(f"\nSearch complete. Results saved in {OUTPUT_FILE}")
+
+
+@app.route("/")
+def health_check():
+    return "OK", 200
+
+@app.route('/get-json')
+def get_json():
+    file_path = os.path.join(os.getcwd(), PROGRESS_FILE)
+    compressed_file = file_path + ".gz"
+    with open(file_path, 'rb') as f_in:
+        with gzip.open(compressed_file, 'wb') as f_out:
+            f_out.writelines(f_in)
+    return send_file(compressed_file, as_attachment=True)
+
+@app.route('/final-json')
+def get_json():
+    file_path = os.path.join(os.getcwd(), OUTPUT_FILE)
+    compressed_file = file_path + ".gz"
+    with open(file_path, 'rb') as f_in:
+        with gzip.open(compressed_file, 'wb') as f_out:
+            f_out.writelines(f_in)
+    return send_file(compressed_file, as_attachment=True)
 
 def run_flask():
     app.run(host="0.0.0.0", port=8080)
