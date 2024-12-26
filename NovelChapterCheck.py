@@ -96,7 +96,7 @@ def gemini_response(text):
         except Exception as e:
             # Handle prohibited content specifically
             if "PROHIBITED_CONTENT" in str(e):
-                return "yes-prohibited"
+                return "no-prohibited"
             print(f"Error in Gemini API response: {e}")
             return ""
 
@@ -144,7 +144,7 @@ def search_terms_in_chapter(chapter_url):
         response = gemini_response(text_content)
         if response and "yes" in response:
             if "prohibited" in response:
-                print(chapter_url)
+                print(f"Prohibited content found in {chapter_url}")
             return {term: term in text_content for term in SEARCH_TERMS}
 
     return {term: False for term in SEARCH_TERMS}
