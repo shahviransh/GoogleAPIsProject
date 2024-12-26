@@ -227,10 +227,9 @@ def main():
             try:
                 novel_url = future_to_novel[future]
                 novel_results = future.result()
-                if novel_results:
-                    results_buffer.append(
-                        {"novel_url": novel_url, "results": novel_results}
-                    )
+                results_buffer.append(
+                   {"novel_url": novel_url, "results": novel_results}
+                )
                 # Save progress periodically
                 if len(results_buffer) >= 10:  # Buffer size threshold
                     all_results.extend(results_buffer)
