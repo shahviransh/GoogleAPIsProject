@@ -97,6 +97,8 @@ def gemini_response(text):
             # Handle prohibited content specifically
             if "PROHIBITED_CONTENT" in str(e):
                 return "no-prohibited"
+            if "429" in str(e):
+                time.sleep(10)
             print(f"Error in Gemini API response: {e}")
             return ""
 
