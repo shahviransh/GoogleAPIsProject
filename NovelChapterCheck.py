@@ -6,7 +6,6 @@ import os
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import vertexai
-import sys
 from vertexai.generative_models import (
     GenerativeModel,
     HarmCategory,
@@ -26,6 +25,7 @@ OUTPUT_FILE = os.path.join(os.getcwd(), "final.json")
 PROGRESS_FILE = os.path.join(os.getcwd(), "results.json")
 CHAPTER_LIMIT = 5
 SEARCH_TERMS = os.getenv("KEYWORDS").split(",")
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/viranshshah/cloudAPIKey.json"
 
 lock = threading.Lock()
 vertexai.init(project=PROJECT_ID, location="us-central1")
@@ -94,6 +94,9 @@ def gemini_response(text):
             return response.text.lower()
 
         except Exception as e:
+            # Handle prohibited content specifically
+            if "PROHIBITED_CONTENT" in str(e):
+                return "yes-prohibited"
             print(f"Error in Gemini API response: {e}")
             return ""
 
@@ -140,6 +143,8 @@ def search_terms_in_chapter(chapter_url):
     if text_content != "" and any(term in text_content for term in SEARCH_TERMS):
         response = gemini_response(text_content)
         if response and "yes" in response:
+            if "prohibited" in response:
+                print(chapter_url)
             return {term: term in text_content for term in SEARCH_TERMS}
 
     return {term: False for term in SEARCH_TERMS}
