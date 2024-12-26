@@ -142,9 +142,9 @@ def search_terms_in_chapter(chapter_url):
 
     if text_content != "" and any(term in text_content for term in SEARCH_TERMS):
         response = gemini_response(text_content)
+        if "prohibited" in response:
+            print(f"Prohibited content found in {chapter_url}")
         if response and "yes" in response:
-            if "prohibited" in response:
-                print(f"Prohibited content found in {chapter_url}")
             return {term: term in text_content for term in SEARCH_TERMS}
 
     return {term: False for term in SEARCH_TERMS}
