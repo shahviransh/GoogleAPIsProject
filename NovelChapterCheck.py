@@ -98,7 +98,8 @@ def gemini_response(text):
             if "PROHIBITED_CONTENT" in str(e):
                 return "no-prohibited"
             if "429" in str(e):
-                os._exit(1)  # Exit immediately on rate limit error
+                time.sleep(10)
+                os._exit(1)
             print(f"Error in Gemini API response: {e}")
             return ""
 
