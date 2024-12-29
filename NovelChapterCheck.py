@@ -131,6 +131,44 @@ def extract_chapter_links(novel_url):
                 chapter_links.append(BASE_URL + href)
     return chapter_links
 
+def get_novel_categories(novel_url):
+    """Get the categories of the novel."""
+    categories = []
+    soup = get_soup(novel_url)
+    if soup is None:
+        return categories
+    
+    ul_tag = soup.select("div.categories ul")
+    if not ul_tag:
+        print(f"Categories not found for {novel_url}")
+        return categories
+
+    for ul in ul_tag:
+        li_tags = ul.find_all("li")
+        for li_tag in li_tags:
+            categories.append(li_tag.get_text(strip=True))
+
+    return categories
+
+def get_novel_tags(novel_url):
+    """Get the tags of the novel."""
+    tags = []
+    soup = get_soup(novel_url)
+    if soup is None:
+        return tags
+    
+    ul_tag = soup.select("div.tags ul.content")
+    if not ul_tag:
+        print(f"Tags not found for {novel_url}")
+        return tags
+    
+    for ul in ul_tag:
+        li_tags = ul.find_all("li")
+        for li_tag in li_tags:
+            tags.append(li_tag.get_text(strip=True))
+
+    return tags
+
 
 def search_terms_in_chapter(chapter_url):
     """Search for specific terms in a chapter's content."""
@@ -243,6 +281,13 @@ def main():
     if results_buffer:
         all_results.extend(results_buffer)
         save_progress(all_results)
+
+    for result in all_results:
+        novel_url = result["novel_url"]
+        novel_categories = get_novel_categories(novel_url)
+        novel_tags = get_novel_tags(novel_url)
+        result["categories"] = ",".join(novel_categories)
+        result["tags"] = ",".join(novel_tags)
 
     # Filter and save the final results
     filtered_results = [
