@@ -112,7 +112,7 @@ def extract_chapter_links(novel_url):
     if soup is None:
         return chapter_links
 
-    categories, tags = get_novel_categories_tags(soup)
+    title, categories, tags = get_novel_categories_tags(soup)
 
     # Extract chapter links from the unordered list in the '#chpagedlist' section
     ul_tag = soup.select_one("#chpagedlist ul.chapter-list")
@@ -131,7 +131,7 @@ def extract_chapter_links(novel_url):
             href = a_tag.get("href")
             if href:
                 chapter_links.append(BASE_URL + href)
-    return chapter_links, categories, tags
+    return chapter_links, title, categories, tags
 
 
 def get_novel_categories_tags(novel_url):
@@ -142,7 +142,7 @@ def get_novel_categories_tags(novel_url):
         get_soup(novel_url) if not isinstance(novel_url, BeautifulSoup) else novel_url
     )
     if soup is None:
-        return categories, tags
+        return title, categories, tags
 
     # Get categories
     ul_tag_cat = soup.select("div.categories ul")
@@ -160,7 +160,10 @@ def get_novel_categories_tags(novel_url):
             for li_tag in li_tags:
                 tags.append(li_tag.get_text(strip=True))
 
-    return categories, tags
+    # Get title
+    title = soup.select_one("h1.novel-title.text2row").get_text(strip=True)
+
+    return title, categories, tags
 
 
 def search_terms_in_chapter(chapter_url):
@@ -186,7 +189,7 @@ def search_terms_in_chapter(chapter_url):
 
 def process_novel(novel_url):
     """Process each novel by visiting its chapters and searching for terms."""
-    chapter_links, categories, tags = extract_chapter_links(novel_url)
+    chapter_links, title, categories, tags = extract_chapter_links(novel_url)
     novel_results = []
 
     with ThreadPoolExecutor(max_workers=10) as executor:
@@ -206,7 +209,7 @@ def process_novel(novel_url):
                 print(f"Error processing chapter {chapter_url}: {exc}")
                 os._exit(1)  # Stop everything on any error
 
-    return novel_results, categories, tags
+    return novel_results, title, categories, tags
 
 
 def save_progress(results):
@@ -247,12 +250,13 @@ def main():
     remaining_novels = [url for url in novel_links if url not in completed_novels]
 
     print("Getting categories")
+    
 
     for result in all_results[:]:  # Iterate over a copy
         novel_url = result["novel_url"]
 
         # Skip processing if already contains categories and tags
-        if "categories" in result and "tags" in result:
+        if "categories" in result and "tags" in result and "title" in result:
             categories = set(result["categories"].split(","))
             tags = set(result["tags"].split(","))
 
@@ -262,7 +266,8 @@ def main():
             continue
 
         # Fetch categories and tags if missing
-        novel_categories, novel_tags = get_novel_categories_tags(novel_url)
+        novel_title, novel_categories, novel_tags = get_novel_categories_tags(novel_url)
+        result["title"] = novel_title
         result["categories"] = ", ".join(novel_categories)
         result["tags"] = ", ".join(novel_tags)
 
@@ -287,11 +292,12 @@ def main():
         for future in as_completed(future_to_novel):
             try:
                 novel_url = future_to_novel[future]
-                novel_results, categories, tags = future.result()
+                novel_results, title, categories, tags = future.result()
                 all_results.append(
                     {
                         "novel_url": novel_url,
                         "results": novel_results,
+                        "title": title,
                         "categories": ", ".join(categories),
                         "tags": ", ".join(tags),
                     }
