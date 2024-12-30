@@ -112,6 +112,8 @@ def extract_chapter_links(novel_url):
     if soup is None:
         return chapter_links
 
+    categories, tags = get_novel_categories_tags(soup)
+
     # Extract chapter links from the unordered list in the '#chpagedlist' section
     ul_tag = soup.select_one("#chpagedlist ul.chapter-list")
     if not ul_tag:
@@ -129,45 +131,36 @@ def extract_chapter_links(novel_url):
             href = a_tag.get("href")
             if href:
                 chapter_links.append(BASE_URL + href)
-    return chapter_links
+    return chapter_links, categories, tags
 
-def get_novel_categories(novel_url):
-    """Get the categories of the novel."""
+
+def get_novel_categories_tags(novel_url):
+    """Get the categories and tags of the novel."""
     categories = []
-    soup = get_soup(novel_url)
-    if soup is None:
-        return categories
-    
-    ul_tag = soup.select("div.categories ul")
-    if not ul_tag:
-        print(f"Categories not found for {novel_url}")
-        return categories
-
-    for ul in ul_tag:
-        li_tags = ul.find_all("li")
-        for li_tag in li_tags:
-            categories.append(li_tag.get_text(strip=True))
-
-    return categories
-
-def get_novel_tags(novel_url):
-    """Get the tags of the novel."""
     tags = []
-    soup = get_soup(novel_url)
+    soup = (
+        get_soup(novel_url) if not isinstance(novel_url, BeautifulSoup) else novel_url
+    )
     if soup is None:
-        return tags
-    
-    ul_tag = soup.select("div.tags ul.content")
-    if not ul_tag:
-        print(f"Tags not found for {novel_url}")
-        return tags
-    
-    for ul in ul_tag:
-        li_tags = ul.find_all("li")
-        for li_tag in li_tags:
-            tags.append(li_tag.get_text(strip=True))
+        return categories, tags
 
-    return tags
+    # Get categories
+    ul_tag_cat = soup.select("div.categories ul")
+    if ul_tag_cat:
+        for ul in ul_tag_cat:
+            li_tags = ul.find_all("li")
+            for li_tag in li_tags:
+                categories.append(li_tag.get_text(strip=True))
+
+    # Get tags
+    ul_tag_tag = soup.select("div.tags ul.content")
+    if ul_tag_tag:
+        for ul in ul_tag_tag:
+            li_tags = ul.find_all("li")
+            for li_tag in li_tags:
+                tags.append(li_tag.get_text(strip=True))
+
+    return categories, tags
 
 
 def search_terms_in_chapter(chapter_url):
@@ -193,7 +186,7 @@ def search_terms_in_chapter(chapter_url):
 
 def process_novel(novel_url):
     """Process each novel by visiting its chapters and searching for terms."""
-    chapter_links = extract_chapter_links(novel_url)
+    chapter_links, categories, tags = extract_chapter_links(novel_url)
     novel_results = []
 
     with ThreadPoolExecutor(max_workers=10) as executor:
@@ -213,7 +206,7 @@ def process_novel(novel_url):
                 print(f"Error processing chapter {chapter_url}: {exc}")
                 os._exit(1)  # Stop everything on any error
 
-    return novel_results
+    return novel_results, categories, tags
 
 
 def save_progress(results):
@@ -252,6 +245,36 @@ def main():
     all_results = load_progress()
     completed_novels = {result["novel_url"] for result in all_results}
     remaining_novels = [url for url in novel_links if url not in completed_novels]
+
+    print("Getting categories")
+
+    for result in all_results[:]:  # Iterate over a copy
+        novel_url = result["novel_url"]
+
+        # Skip processing if already contains categories and tags
+        if "categories" in result and "tags" in result:
+            categories = set(result["categories"].split(","))
+            tags = set(result["tags"].split(","))
+
+            # Check for intersection with exclude keywords
+            if exclude_keywords & categories or exclude_keywords & tags:
+                all_results.remove(result)  # Safely remove from original list
+            continue
+
+        # Fetch categories and tags if missing
+        novel_categories, novel_tags = get_novel_categories_tags(novel_url)
+        result["categories"] = ", ".join(novel_categories)
+        result["tags"] = ", ".join(novel_tags)
+
+        categories = set(novel_categories)
+        tags = set(novel_tags)
+
+        # Check for intersection with exclude keywords
+        if exclude_keywords & categories or exclude_keywords & tags:
+            all_results.remove(result)  # Safely remove from original list
+
+        save_progress(all_results)
+
     print(f"\nProcessing {len(remaining_novels)} novels...")
 
     results_buffer = []
@@ -264,15 +287,16 @@ def main():
         for future in as_completed(future_to_novel):
             try:
                 novel_url = future_to_novel[future]
-                novel_results = future.result()
-                results_buffer.append(
-                   {"novel_url": novel_url, "results": novel_results}
+                novel_results, categories, tags = future.result()
+                all_results.append(
+                    {
+                        "novel_url": novel_url,
+                        "results": novel_results,
+                        "categories": ", ".join(categories),
+                        "tags": ", ".join(tags),
+                    }
                 )
-                # Save progress periodically
-                if len(results_buffer) >= 10:  # Buffer size threshold
-                    all_results.extend(results_buffer)
-                    save_progress(all_results)
-                    results_buffer.clear()
+                save_progress(all_results)
             except Exception as exc:
                 print(f"Error processing novel {novel_url}: {exc}")
                 os._exit(1)  # Stop everything on any error
@@ -282,22 +306,13 @@ def main():
         all_results.extend(results_buffer)
         save_progress(all_results)
 
-    for result in all_results:
-        novel_url = result["novel_url"]
-        novel_categories = get_novel_categories(novel_url)
-        novel_tags = get_novel_tags(novel_url)
-        result["categories"] = ",".join(novel_categories)
-        result["tags"] = ",".join(novel_tags)
-
     # Filter and save the final results
     filtered_results = [
         {
             "novel_url": result["novel_url"],
             "chapter_url": chapter["chapter_url"],
             "found_terms": {
-                term: found
-                for term, found in chapter["found_terms"].items()
-                if found
+                term: found for term, found in chapter["found_terms"].items() if found
             },
         }
         for result in all_results
