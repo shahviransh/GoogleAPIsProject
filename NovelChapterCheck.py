@@ -30,7 +30,6 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/viranshshah/cloudAPIKey.js
 lock = threading.Lock()
 vertexai.init(project=PROJECT_ID, location="us-central1")
 
-
 def get_soup(url):
     """Fetch the content of a URL and return a BeautifulSoup object."""
     with lock:
@@ -138,6 +137,7 @@ def get_novel_categories_tags(novel_url):
     """Get the categories and tags of the novel."""
     categories = []
     tags = []
+    title = ''
     soup = (
         get_soup(novel_url) if not isinstance(novel_url, BeautifulSoup) else novel_url
     )
@@ -161,7 +161,8 @@ def get_novel_categories_tags(novel_url):
                 tags.append(li_tag.get_text(strip=True))
 
     # Get title
-    title = soup.select_one("h1.novel-title.text2row").get_text(strip=True)
+    title = soup.select_one("h1.novel-title.text2row")
+    title = title.get_text(strip=True) if title else ''
 
     return title, categories, tags
 
@@ -236,6 +237,28 @@ def load_progress():
     return []
 
 
+def process_result(result):
+    novel_url = result["novel_url"]
+
+    # Skip processing if already contains categories and tags
+    if "categories" in result and "tags" in result and "title" in result:
+        categories = set(result["categories"].split(","))
+        tags = set(result["tags"].split(","))
+    else:
+        # Fetch categories and tags if missing
+        novel_title, novel_categories, novel_tags = get_novel_categories_tags(novel_url)
+        result["title"] = novel_title
+        result["categories"] = ", ".join(novel_categories)
+        result["tags"] = ", ".join(novel_tags)
+        categories = set(novel_categories)
+        tags = set(novel_tags)
+
+    # Check for intersection with exclude keywords
+    if exclude_keywords & categories or exclude_keywords & tags:
+        return None  # Indicate exclusion
+    return result
+
+
 def main():
     """Main function to process all novel links and search for terms in their chapters."""
     try:
@@ -248,37 +271,17 @@ def main():
     all_results = load_progress()
     completed_novels = {result["novel_url"] for result in all_results}
     remaining_novels = [url for url in novel_links if url not in completed_novels]
+    processed_results = []
 
     print("Getting categories")
-    
 
-    for result in all_results[:]:  # Iterate over a copy
-        novel_url = result["novel_url"]
+    # Optimize using ThreadPoolExecutor for fetching and processing
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        processed_results = list(executor.map(process_result, all_results))
 
-        # Skip processing if already contains categories and tags
-        if "categories" in result and "tags" in result and "title" in result:
-            categories = set(result["categories"].split(","))
-            tags = set(result["tags"].split(","))
-
-            # Check for intersection with exclude keywords
-            if exclude_keywords & categories or exclude_keywords & tags:
-                all_results.remove(result)  # Safely remove from original list
-            continue
-
-        # Fetch categories and tags if missing
-        novel_title, novel_categories, novel_tags = get_novel_categories_tags(novel_url)
-        result["title"] = novel_title
-        result["categories"] = ", ".join(novel_categories)
-        result["tags"] = ", ".join(novel_tags)
-
-        categories = set(novel_categories)
-        tags = set(novel_tags)
-
-        # Check for intersection with exclude keywords
-        if exclude_keywords & categories or exclude_keywords & tags:
-            all_results.remove(result)  # Safely remove from original list
-
-        save_progress(all_results)
+    # Filter out None values and save progress
+    all_results = [result for result in processed_results if result is not None]
+    save_progress(all_results)
 
     print(f"\nProcessing {len(remaining_novels)} novels...")
 
