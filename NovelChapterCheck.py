@@ -277,15 +277,19 @@ def main():
 
     # Optimize using ThreadPoolExecutor for fetching and processing
     with ThreadPoolExecutor(max_workers=10) as executor:
-        processed_results = list(executor.map(process_result, all_results))
+        for result in all_results[:]:  # Use a copy of the list to modify safely
+            processed_result = process_result(result)
+            if processed_result is None:
+                with lock:
+                    all_results.remove(result)
+            else:
+                with lock:
+                    save_progress(all_results)
 
-    # Filter out None values and save progress
-    all_results = [result for result in processed_results if result is not None]
     save_progress(all_results)
 
     print(f"\nProcessing {len(remaining_novels)} novels...")
 
-    results_buffer = []
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_novel = {
             executor.submit(process_novel, novel_url): novel_url
@@ -309,11 +313,6 @@ def main():
             except Exception as exc:
                 print(f"Error processing novel {novel_url}: {exc}")
                 os._exit(1)  # Stop everything on any error
-
-    # Final save for any remaining results
-    if results_buffer:
-        all_results.extend(results_buffer)
-        save_progress(all_results)
 
     # Filter and save the final results
     filtered_results = [
