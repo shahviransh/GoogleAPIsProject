@@ -137,7 +137,7 @@ def get_novel_categories_tags(novel_url):
     """Get the categories and tags of the novel."""
     categories = []
     tags = []
-    title = ''
+    title = ""
     soup = (
         get_soup(novel_url) if not isinstance(novel_url, BeautifulSoup) else novel_url
     )
@@ -162,7 +162,7 @@ def get_novel_categories_tags(novel_url):
 
     # Get title
     title = soup.select_one("h1.novel-title.text2row")
-    title = title.get_text(strip=True) if title else ''
+    title = title.get_text(strip=True) if title else ""
 
     return title, categories, tags
 
@@ -244,6 +244,9 @@ def process_result(result):
     if "categories" in result and "tags" in result and "title" in result:
         categories = set(result["categories"].split(","))
         tags = set(result["tags"].split(","))
+        if exclude_keywords & categories or exclude_keywords & tags:
+            return None
+        return []
     else:
         # Fetch categories and tags if missing
         novel_title, novel_categories, novel_tags = get_novel_categories_tags(novel_url)
@@ -271,20 +274,30 @@ def main():
     all_results = load_progress()
     completed_novels = {result["novel_url"] for result in all_results}
     remaining_novels = [url for url in novel_links if url not in completed_novels]
-    processed_results = []
 
     print("Getting categories")
 
-    # Optimize using ThreadPoolExecutor for fetching and processing
     with ThreadPoolExecutor(max_workers=10) as executor:
-        for result in all_results[:]:  # Use a copy of the list to modify safely
-            processed_result = process_result(result)
-            if processed_result is None:
-                with lock:
-                    all_results.remove(result)
-            else:
-                with lock:
-                    save_progress(all_results)
+        # Submit tasks to the executor
+        futures = {
+            executor.submit(process_result, result): result for result in all_results[:]
+        }
+
+        for future in as_completed(futures):
+            result = futures[future]
+            try:
+                processed_result = future.result()
+                if processed_result is None:
+                    with lock:
+                        all_results.remove(result)
+                elif processed_result == []:
+                    # Skip saving progress if categories, tags, and title already exist
+                    continue
+                else:
+                    with lock:
+                        save_progress(all_results)
+            except Exception as e:
+                print(f"Error processing result {result['novel_url']}: {e}")
 
     save_progress(all_results)
 
