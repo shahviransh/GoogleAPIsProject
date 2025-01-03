@@ -30,6 +30,7 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/viranshshah/cloudAPIKey.js
 lock = threading.Lock()
 vertexai.init(project=PROJECT_ID, location="us-central1")
 
+
 def get_soup(url):
     """Fetch the content of a URL and return a BeautifulSoup object."""
     with lock:
@@ -108,10 +109,16 @@ def extract_chapter_links(novel_url):
     chapter_links = []
     chapter_lim = CHAPTER_LIMIT
     soup = get_soup(novel_url)
+    title, categories, tags = "", [], []
     if soup is None:
-        return chapter_links
+        return chapter_links, title, categories, tags
 
     title, categories, tags = get_novel_categories_tags(soup)
+
+    if exclude_keywords & set(
+        [s.strip() for s in categories]
+    ) or exclude_keywords & set([s.strip() for s in tags]):
+        return chapter_links, "", [], []
 
     # Extract chapter links from the unordered list in the '#chpagedlist' section
     ul_tag = soup.select_one("#chpagedlist ul.chapter-list")
@@ -287,14 +294,13 @@ def main():
             result = futures[future]
             try:
                 processed_result = future.result()
-                if processed_result is None:
-                    with lock:
+                with lock:
+                    if processed_result is None:
                         all_results.remove(result)
-                elif processed_result == []:
-                    # Skip saving progress if categories, tags, and title already exist
-                    continue
-                else:
-                    with lock:
+                    elif processed_result == []:
+                        # Skip saving progress if categories, tags, and title already exist
+                        continue
+                    else:
                         save_progress(all_results)
             except Exception as e:
                 print(f"Error processing result {result['novel_url']}: {e}")
@@ -313,16 +319,17 @@ def main():
             try:
                 novel_url = future_to_novel[future]
                 novel_results, title, categories, tags = future.result()
-                all_results.append(
-                    {
-                        "novel_url": novel_url,
-                        "results": novel_results,
-                        "title": title,
-                        "categories": ", ".join(categories),
-                        "tags": ", ".join(tags),
-                    }
-                )
-                save_progress(all_results)
+                if title or categories or tags:
+                    all_results.append(
+                        {
+                            "novel_url": novel_url,
+                            "results": novel_results,
+                            "title": title,
+                            "categories": ", ".join(categories),
+                            "tags": ", ".join(tags),
+                        }
+                    )
+                    save_progress(all_results)
             except Exception as exc:
                 print(f"Error processing novel {novel_url}: {exc}")
                 os._exit(1)  # Stop everything on any error
