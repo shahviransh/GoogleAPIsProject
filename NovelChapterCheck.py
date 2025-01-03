@@ -242,8 +242,8 @@ def process_result(result):
 
     # Skip processing if already contains categories and tags
     if "categories" in result and "tags" in result and "title" in result:
-        categories = set(result["categories"].split(","))
-        tags = set(result["tags"].split(","))
+        categories = set([s.strip() for s in result["categories"].split(",")])
+        tags = set([s.strip() for s in result["tags"].split(",")])
         if exclude_keywords & categories or exclude_keywords & tags:
             return None
         return []
