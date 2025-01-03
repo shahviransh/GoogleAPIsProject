@@ -284,10 +284,13 @@ def main():
 
     print("Getting categories")
 
+    all_results_dict = {result["novel_url"]: result for result in all_results}
+    to_remove_keys = set()
+
     with ThreadPoolExecutor(max_workers=10) as executor:
         # Submit tasks to the executor
         futures = {
-            executor.submit(process_result, result): result for result in all_results[:]
+            executor.submit(process_result, result): result for result in all_results
         }
 
         for future in as_completed(futures):
@@ -296,7 +299,7 @@ def main():
                 processed_result = future.result()
                 with lock:
                     if processed_result is None:
-                        all_results.remove(result)
+                        to_remove_keys.add(result["novel_url"])  # Mark for removal by key
                     elif processed_result == []:
                         # Skip saving progress if categories, tags, and title already exist
                         continue
@@ -305,6 +308,11 @@ def main():
             except Exception as e:
                 print(f"Error processing result {result['novel_url']}: {e}")
 
+    # Efficient bulk removal
+    for key in to_remove_keys:
+        all_results_dict.pop(key)
+
+    all_results = list(all_results_dict.values())  # Convert back to list
     save_progress(all_results)
 
     print(f"\nProcessing {len(remaining_novels)} novels...")
