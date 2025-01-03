@@ -73,7 +73,12 @@ def process_url(current_url, processed_urls, novel_links):
         return None
 
     page_links = extract_novel_links(soup)
-    novel_links.update(page_links)
+    
+    # Add the novel links to the set if they are not already present
+    for link in page_links:
+        if link not in novel_links:
+            novel_links.add(link)
+
     next_page = get_next_page(soup)
     processed_urls.add(current_url)
     return next_page
