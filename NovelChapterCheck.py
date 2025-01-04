@@ -118,6 +118,7 @@ def extract_chapter_links(novel_url):
     if exclude_keywords & set(
         [s.strip() for s in categories]
     ) or exclude_keywords & set([s.strip() for s in tags]):
+        excludeNovel(novel_url)
         return chapter_links, "", [], []
 
     # Extract chapter links from the unordered list in the '#chpagedlist' section
@@ -138,6 +139,18 @@ def extract_chapter_links(novel_url):
             if href:
                 chapter_links.append(BASE_URL + href)
     return chapter_links, title, categories, tags
+
+def excludeNovel(novel_url):
+    """Exclude the novel from the list."""
+    with lock:
+        try:
+            with open(NOVEL_LINKS_FILE, "r") as file:
+                novel_links = set([line.strip() for line in file.readlines()])
+            novel_links.discard(novel_url)
+            with open(NOVEL_LINKS_FILE, "w") as file:
+                file.write("\n".join(novel_links))
+        except Exception as e:
+            print(f"Error excluding novel: {e}")
 
 
 def get_novel_categories_tags(novel_url):
@@ -282,38 +295,38 @@ def main():
     completed_novels = {result["novel_url"] for result in all_results}
     remaining_novels = [url for url in novel_links if url not in completed_novels]
 
-    print("Getting categories")
+    # print("Getting categories")
 
-    all_results_dict = {result["novel_url"]: result for result in all_results}
-    to_remove_keys = set()
+    # all_results_dict = {result["novel_url"]: result for result in all_results}
+    # to_remove_keys = set()
 
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        # Submit tasks to the executor
-        futures = {
-            executor.submit(process_result, result): result for result in all_results
-        }
+    # with ThreadPoolExecutor(max_workers=10) as executor:
+    #     # Submit tasks to the executor
+    #     futures = {
+    #         executor.submit(process_result, result): result for result in all_results
+    #     }
 
-        for future in as_completed(futures):
-            result = futures[future]
-            try:
-                processed_result = future.result()
-                with lock:
-                    if processed_result is None:
-                        to_remove_keys.add(result["novel_url"])  # Mark for removal by key
-                    elif processed_result == []:
-                        # Skip saving progress if categories, tags, and title already exist
-                        continue
-                    else:
-                        save_progress(all_results)
-            except Exception as e:
-                print(f"Error processing result {result['novel_url']}: {e}")
+    #     for future in as_completed(futures):
+    #         result = futures[future]
+    #         try:
+    #             processed_result = future.result()
+    #             if processed_result is None:
+    #                 to_remove_keys.add(result["novel_url"])  # Mark for removal by key
+    #             elif processed_result == []:
+    #                 # Skip saving progress if categories, tags, and title already exist
+    #                 continue
+    #             else:
+    #                 with lock:
+    #                     save_progress(all_results)
+    #         except Exception as e:
+    #             print(f"Error processing result {result['novel_url']}: {e}")
 
-    # Efficient bulk removal
-    for key in to_remove_keys:
-        all_results_dict.pop(key)
+    # # Efficient bulk removal
+    # for key in to_remove_keys:
+    #     all_results_dict.pop(key)
 
-    all_results = list(all_results_dict.values())  # Convert back to list
-    save_progress(all_results)
+    # all_results = list(all_results_dict.values())  # Convert back to list
+    # save_progress(all_results)
 
     print(f"\nProcessing {len(remaining_novels)} novels...")
 
