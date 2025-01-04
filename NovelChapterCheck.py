@@ -118,7 +118,6 @@ def extract_chapter_links(novel_url):
     if exclude_keywords & set(
         [s.strip() for s in categories]
     ) or exclude_keywords & set([s.strip() for s in tags]):
-        excludeNovel(novel_url)
         return chapter_links, "", [], []
 
     # Extract chapter links from the unordered list in the '#chpagedlist' section
@@ -139,19 +138,6 @@ def extract_chapter_links(novel_url):
             if href:
                 chapter_links.append(BASE_URL + href)
     return chapter_links, title, categories, tags
-
-def excludeNovel(novel_url):
-    """Exclude the novel from the list."""
-    with lock:
-        try:
-            with open(NOVEL_LINKS_FILE, "r") as file:
-                novel_links = set([line.strip() for line in file.readlines()])
-            novel_links.discard(novel_url)
-            with open(NOVEL_LINKS_FILE, "w") as file:
-                file.write("\n".join(novel_links))
-        except Exception as e:
-            print(f"Error excluding novel: {e}")
-
 
 def get_novel_categories_tags(novel_url):
     """Get the categories and tags of the novel."""
@@ -340,17 +326,16 @@ def main():
             try:
                 novel_url = future_to_novel[future]
                 novel_results, title, categories, tags = future.result()
-                if title or categories or tags:
-                    all_results.append(
-                        {
-                            "novel_url": novel_url,
-                            "results": novel_results,
-                            "title": title,
-                            "categories": ", ".join(categories),
-                            "tags": ", ".join(tags),
-                        }
-                    )
-                    save_progress(all_results)
+                all_results.append(
+                    {
+                        "novel_url": novel_url,
+                        "results": novel_results,
+                        "title": title,
+                        "categories": ", ".join(categories),
+                        "tags": ", ".join(tags),
+                    }
+                )
+                save_progress(all_results)
             except Exception as exc:
                 print(f"Error processing novel {novel_url}: {exc}")
                 os._exit(1)  # Stop everything on any error
