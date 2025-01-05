@@ -15,12 +15,16 @@ def filter_novels(
         title_match = any(
             keyword.lower() in dictionary["title"].lower() for keyword in title_keywords
         )
+        if title_match == set():
+            title_match = True
 
         # Check tags and categories based on AND/OR logic
         tags_categories = dictionary["tags"].split(", ") + dictionary[
             "categories"
         ].split(", ")
-        if tags_categories_logic == "AND":
+        if tags_categories_keywords == set():  # Empty input
+            tags_categories_match = True
+        elif tags_categories_logic == "AND":
             tags_categories_match = all(
                 keyword.lower() in map(str.lower, tags_categories)
                 for keyword in tags_categories_keywords
@@ -39,7 +43,8 @@ def filter_novels(
             )
             if title_match and tags_categories_match and terms_match:
                 if chapter["chapter_url"] not in printed_urls:
-                    print(chapter["chapter_url"])
+                    print(f"Title: {dictionary['title']}")
+                    print(f"Chapter URL: {chapter['chapter_url']}\n")
                     printed_urls.add(chapter["chapter_url"])
 
 
