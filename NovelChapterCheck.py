@@ -38,7 +38,6 @@ def get_soup(url):
             time.sleep(0.5)  # Add a delay to avoid overloading the server
             response = requests.get(url)
             if response.status_code in [403, 404]:
-                print(f"URL not found (404): {url}")
                 return None
             response.raise_for_status()
             return BeautifulSoup(response.text, "html.parser")
@@ -123,7 +122,6 @@ def extract_chapter_links(novel_url):
     # Extract chapter links from the unordered list in the '#chpagedlist' section
     ul_tag = soup.select_one("#chpagedlist ul.chapter-list")
     if not ul_tag:
-        print(f"Chapter list not found for {novel_url}")
         return chapter_links
 
     # Ensure CHAPTER_LIMIT does not exceed the number of available <li> tags
