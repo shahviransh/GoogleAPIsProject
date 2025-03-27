@@ -114,15 +114,15 @@ def extract_chapter_links(novel_url):
 
     title, categories, tags = get_novel_categories_tags(soup)
 
-    if exclude_keywords & set(
-        [s.strip() for s in categories]
-    ) or exclude_keywords & set([s.strip() for s in tags]):
+    if exclude_keywords & {s.strip() for s in categories} or exclude_keywords & {
+        s.strip() for s in tags
+    }:
         return chapter_links, "", [], []
 
     # Extract chapter links from the unordered list in the '#chpagedlist' section
     ul_tag = soup.select_one("#chpagedlist ul.chapter-list")
     if not ul_tag:
-        return chapter_links
+        return chapter_links, title, categories, tags
 
     # Ensure CHAPTER_LIMIT does not exceed the number of available <li> tags
     li_tags = ul_tag.find_all("li")
@@ -136,6 +136,7 @@ def extract_chapter_links(novel_url):
             if href:
                 chapter_links.append(BASE_URL + href)
     return chapter_links, title, categories, tags
+
 
 def get_novel_categories_tags(novel_url):
     """Get the categories and tags of the novel."""
