@@ -11,6 +11,7 @@ results.json
 novel_links.txt
 script.ps1
 final.json
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
