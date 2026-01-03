@@ -1,8 +1,10 @@
 import json
 import time
 import requests
+import re
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -31,9 +33,9 @@ def getLengthOfImages(path):
     return count
 
 
-start = 123
+start = 57
 dir_path = "Gao Wu, Swallowed Star CG"
-end = 159
+end = 887
 image_prefix = os.getenv("IMAGE_PREFIX")
 
 
@@ -80,12 +82,26 @@ def fetch_image_url(driver, url):
 
         # Parse with BeautifulSoup
         soup = BeautifulSoup(page_source, "html.parser")
+        
+        # Extract from img tags
         images = soup.find_all("img")
         img_txt = [
             img["src"]
             for img in images
             if "src" in img.attrs and image_prefix in img["src"]
         ]
+        
+        # Extract from background-image in style attributes
+        divs_with_style = soup.find_all(style=re.compile(r'background-image'))
+        for div in divs_with_style:
+            style = div.get('style', '')
+            # Extract URL from background-image: url("...") or url(&quot;...&quot;)
+            match = re.search(r'url\(["\']?(//[^"\')\s]+)["\']?\)', style)
+            if match:
+                bg_url = match.group(1)
+                if image_prefix in bg_url or website in bg_url:
+                    img_txt.append(bg_url)
+        
         return_image = (img_txt, None)
 
         # Extract the first matching image URL
@@ -103,17 +119,23 @@ def fetch_image_url(driver, url):
         return None
 
 
-def download_and_combine_images(image_urls, output_name):
+def download_and_combine_images(image_urls, output_name, session=None):
     """Download images from URLs and combine them into one image."""
     try:
         if not image_urls:
             print("No URLs provided.")
             return
 
+        # Use provided session or create a new one
+        if session is None:
+            session = requests.Session()
+
         # Download images into a list
         images = []
         for url in image_urls:
-            response = requests.get("https:" + url, stream=True)
+            if not url.startswith("http"):
+                url = "https:" + url
+            response = session.get(url, stream=True)
             response.raise_for_status()
             img = Image.open(BytesIO(response.content))
             images.append(img)
@@ -151,7 +173,8 @@ def get_all_images(start, end):
     # Set up the Selenium WebDriver
     options = webdriver.ChromeOptions()
     options.headless = True
-    driver = webdriver.Chrome(options=options)
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
 
     # Load cookies into the driver
     cookies_list = load_cookies(cookies_file)
@@ -161,6 +184,11 @@ def get_all_images(start, end):
             driver.add_cookie(cookie)
         except Exception as e:
             print(f"Error adding cookie {cookie}: {e}")
+
+    # Create a requests session with cookies for downloading images
+    download_session = requests.Session()
+    for cookie in cookies_list:
+        download_session.cookies.set(cookie["name"], cookie["value"], domain=cookie["domain"])
 
     # Iterate through the pages
     for i in range(start, end + 1):
@@ -174,13 +202,13 @@ def get_all_images(start, end):
         if os.path.exists(image_name):
             print(f"Image already exists: {image_name}")
             continue
-        time.sleep(5)
+        time.sleep(1)
         image_urls, image_url = fetch_image_url(driver, url)
 
         if len(image_urls) > 0:
-            download_and_combine_images(image_urls, image_name)
+            download_and_combine_images(image_urls, image_name, download_session)
         if image_url is not None:
-            download_and_combine_images([image_url], image_name2)
+            download_and_combine_images([image_url], image_name2, download_session)
 
     # Close the driver
     driver.quit()
